@@ -1,0 +1,202 @@
+{% extends "base.html"%}
+        {% block title %}
+            Дефект - редактирование
+        {% endblock title %}
+
+{% block body %}
+
+<form method="post" novalidate>
+
+    {{form.hidden_tag()}}
+
+    <div class="row">
+        <div class="col">
+            {{ form.history.label }}
+            {{ form.history(type="text", class="form-control")}}
+            {% for error in form.errors.history %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+      </div>
+        <div class="col">
+            {{ form.doctor_code.label }}
+            {{ form.doctor_code(type="text", class="form-control")}}
+            {% for error in form.errors.doctor_code %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+      </div>
+  </div>
+
+ <div class="form-group">
+    {{ form.defect_codes.label }}
+    {{ form.defect_codes(type="text", class="form-control")}}
+    {% for error in form.errors.defect_codes %}
+            <span style="color: red;">[{{error}}]</span>
+    {% endfor %}<br>
+
+     {{ form.defect_comment.label }}
+     {{ form.defect_comment(class="form-control", rows="10") }}
+    {% for error in form.errors.defect_comment %}
+            <span style="color: red;">[{{error}}]</span>
+    {% endfor %}<br>
+  </div>
+
+
+
+ <div class="form-group">
+    {{ form.period_start.label }}
+    <div class="row">
+        <div class="col">
+        {{ form.period_start(type="date", class="form-control")}}
+        {% for error in form.errors.period_start %}
+                <span style="color: red;">[{{error}}]</span>
+        {% endfor %}<br>
+        </div>
+        <div class="col">
+        {{ form.period_end(type="date", class="form-control")}}
+        {% for error in form.errors.period_end %}
+                <span style="color: red;">[{{error}}]</span>
+        {% endfor %}<br>
+
+        </div>
+    </div>
+    {{ form.disease.label }}
+    {{ form.disease(type="text", class="form-control")}}
+        {% for error in form.errors.disease %}
+                <span style="color: red;">[{{error}}]</span>
+        {% endfor %}<br>
+  </div>
+
+ <div class="form-group">
+    <div class="row">
+        <div class="col">
+            {{ form.sum_service.label }}
+
+            {{ form.sum_service(type="number", class="form-control", step="0.01", min="0", max="1000000",
+            placeholder="0,00")}}
+
+            {% for error in form.errors.sum_service %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+        </div>
+        <div class="col">
+            {{ form.sum_no_pay.label }}
+            {{ form.sum_no_pay(type="number", class="form-control", step="0.01", min="0", max="1000000",
+            placeholder="0,00")}}
+            {% for error in form.errors.sum_no_pay %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+        </div>
+        <div class="col">
+            {{ form.sum_penalty.label }}
+            {{ form.sum_penalty(type="number", class="form-control", step="0.01", min="0.00", max="1000000",
+            placeholder="0,00")}}
+            {% for error in form.errors.sum_penalty %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+        </div>
+    </div>
+  </div>
+
+<button type="submit" class="btn btn-primary">Сохранить</button>
+<a href="{{url_for('defect_list')}}" class="btn btn-secondary" >Отмена</a>
+</form>
+
+<script>
+var availableTags1 = $.getJSON( '/_autocomplete', function() {
+  console.log( "success" );
+});
+
+var availableTags2
+availableTags2 = availableTags1.responseText
+
+    function split(val){
+      return val.split( /,\s*/ );
+    }
+    function extractLast(term){
+      return split(term).pop();
+    }
+
+$(function() {
+        $.ajax({
+            url: '{{ url_for("autocomplete2") }}'
+            }).done(function (data){
+    $("#DefectCodesInput")
+    // остановить смену фокуса, если выделен один из элементов автозаполнения
+    .bind( "keydown", function(event){
+      if ( event.keyCode === $.ui.keyCode.TAB &&
+      $(this).data("autocomplete").menu.active ){
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 2,
+      source: function(request, response){
+        // делегируем поиск элементов автозаполнения обратно плагину, предварительно убрав уже выбранные элементы
+        response( $.ui.autocomplete.filter(
+        data, extractLast(request.term)) );
+      },
+      focus: function(){
+        // отменяем вставку значения на получение фокуса
+        return false;
+      },
+      select: function(event, ui){
+        var terms = split(this.value);
+        // удаляем вводимую часть текста и помещаем вместо нее выбранный элемент
+        terms.pop();
+        terms.push(ui.item.value);
+        // собираем все элементы в строку, разделяя их запятыми и вставляем
+        // строку обратно в текстовое поле
+        terms.push("");
+        this.value = terms.join(", ");
+        return false;
+      }
+    });
+            });
+        });
+
+
+
+$(function() {
+        $.ajax({
+            url: '{{ url_for("autocomplete") }}'
+            }).done(function (data){
+                $('#DoctorInput').autocomplete({
+                    source: data,
+                    minLength: 2
+                });
+            });
+        });
+
+
+var mapKey = {
+  'Й' : 'Q',  'Ц': 'W', 'У': 'E', 'Q': 'Q', 'К': 'R' , 'Е': 'T'  , 'Н': 'Y'  ,  'Г': 'U' , 'Ш': 'I'  , 'Щ': 'O'  ,
+  'З': 'P'  , 'Ф': 'A' ,  'Ы': 'S' , 'В': 'D'  , 'А': 'F'  , 'П': 'G'  , 'Р': 'H'  ,  'О': 'J' , 'Л': 'K'  ,  'Д': 'L' ,
+  'Я': 'Z' , 'Ч': 'X'  ,  'С': 'C' , 'М' : 'V' ,  'И': 'B' , 'Т': 'N'  , 'Ь': 'M'  , 'Б': '.'  , 'Ю': '.'  ,};
+
+
+<!--};-->
+
+$("#disease_code").on('keyup', function () {
+var str = $("#disease_code").val();
+var r = '';
+for (var i = 0; i < str.length; i++) {
+if(mapKey[str.charAt(i).toUpperCase()] || str.charAt(i).match(/^[a-zA-Z0-9.]+$/)){
+ch = mapKey[str.charAt(i).toUpperCase()] || str.charAt(i);
+r += ch.toUpperCase();
+}
+//ch = mapKey[str.charAt(i)] || str.charAt(i);
+//r += ch.toUpperCase();
+}
+//$("#disease_code").val(r).trigger('keydown');
+//Тригерр, если это поле ввода для другого плагина, например autocomplete
+$("#disease_code").val(r);
+});
+
+
+</script>
+
+
+{% endblock body %}
+
+
+

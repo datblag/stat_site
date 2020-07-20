@@ -1,0 +1,38 @@
+{% extends "base.html"%}
+        {% block title %}
+            Список врачей
+        {% endblock title %}
+
+{% block body %}
+    <div class="alert alert-dark" role="alert">
+        <a href="{{url_for('index')}}" class="alert-link">Вернуться на главную</a>
+    </div>
+
+
+
+{% endblock body %}
+{% block row %}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Код</th>
+      <th scope="col">ФИО</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for doctor in doctors%}
+
+    <tr>
+      <td>{{doctor.doctor_stat_code}}</td>
+      <td>{{doctor.doctor_name}}</td>
+    </tr>
+    {% endfor%}
+
+
+  </tbody>
+</table>
+
+
+
+{% endblock row %}

@@ -1,0 +1,122 @@
+{% extends "base.html"%}
+        {% block title %}
+            Дефект - редактирование
+        {% endblock title %}
+
+{% block body %}
+    <div class="alert alert-dark" role="alert">
+        <a href="{{url_for('index')}}" class="alert-link">Вернуться на главную</a>
+    </div>
+
+<div>
+{{ form.autocomp.label }}: {{ form.autocomp }}
+</div>
+
+<div>
+
+<label for="tags">Коды дефектов: </label>
+  <input id="tags" />
+</div>
+
+
+<!--var availableTags = [-->
+<!--      "ActionScript",-->
+<!--      "AppleScript",-->
+<!--      "Asp",-->
+<!--      "BASIC",-->
+<!--      "C",-->
+<!--      "C++",-->
+<!--      "Clojure",-->
+<!--      "COBOL",-->
+<!--      "ColdFusion",-->
+<!--      "Erlang",-->
+<!--      "Fortran",-->
+<!--      "Groovy",-->
+<!--      "Haskell",-->
+<!--      "Java",-->
+<!--      "JavaScript",-->
+<!--      "Lisp",-->
+<!--      "Perl",-->
+<!--      "PHP",-->
+<!--      "Python",-->
+<!--      "Ruby",-->
+<!--      "Scala",-->
+<!--      "Scheme"-->
+<!--    ];-->
+
+<script>
+var availableTags1 = $.getJSON( '/_autocomplete', function() {
+  console.log( "success" );
+});
+
+var availableTags2
+availableTags2 = availableTags1.responseText
+
+    function split(val){
+      return val.split( /,\s*/ );
+    }
+    function extractLast(term){
+      return split(term).pop();
+    }
+
+    $("#tags")
+    // остановить смену фокуса, если выделен один из элементов автозаполнения
+    .bind( "keydown", function(event){
+      if ( event.keyCode === $.ui.keyCode.TAB &&
+      $(this).data("autocomplete").menu.active ){
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response){
+        // делегируем поиск элементов автозаполнения обратно плагину, предварительно убрав уже выбранные элементы
+        response( $.ui.autocomplete.filter(
+        availableTags2, extractLast(request.term)) );
+      },
+      focus: function(){
+        // отменяем вставку значения на получение фокуса
+        return false;
+      },
+      select: function(event, ui){
+        var terms = split(this.value);
+        // удаляем вводимую часть текста и помещаем вместо нее выбранный элемент
+        terms.pop();
+        terms.push(ui.item.value);
+        // собираем все элементы в строку, разделяя их запятыми и вставляем
+        // строку обратно в текстовое поле
+        terms.push("");
+        this.value = terms.join(", ");
+        return false;
+      }
+    });
+
+
+
+$(function() {
+        $.ajax({
+            url: '{{ url_for("autocomplete") }}'
+            }).done(function (data){
+                $('#city_autocomplete').autocomplete({
+                    source: data,
+                    minLength: 2
+                });
+            });
+        });
+
+
+
+</script>
+
+
+{% endblock body %}
+
+
+
+<!--  'ц': 'w' , 'у': 'e'  ,  'к': 'r' , 'е': 't'  , 'н': 'y'  ,  'г': 'u' , 'ш': 'i'  , 'щ': 'o'  , 'з': 'p'  , 'х': '['  , 'ъ': ']'  }-->
+
+<!-- 'ф': 'a' ,  'ы': 's' , 'в': 'd'  , 'а': 'f'  , 'п': 'g'  , 'р': 'h'  ,  'о': 'j' , 'л': 'k'  ,  'д': 'l' , 'ж': ';'  ,  'э': '\'' ,  'я': 'z' , 'ч': 'x'  ,  'с': 'c' , 'м' : 'v' ,  'и': 'b' , 'т': 'n'  , 'ь': 'm'  , 'б': ','  , 'ю': '.'  , 'Й'  'Q',  'Ц': 'W' , 'У': 'E'  ,  'К': 'R' , 'Е': 'T'  , 'Н': 'Y'  ,  'Г': 'U' , 'Ш': 'I'  , 'Щ': 'O'  , 'З': 'P'  , 'Х': '['  , 'Ъ': ']'  ,  'Ф': 'A' ,  'Ы': 'S' , 'В': 'D'  , 'А': 'F'  , 'П': 'G'  , 'Р': 'H'  ,  'О': 'J' , 'Л': 'K'  ,  'Д': 'L' , 'Ж': ';'  ,  'Э': '\'' ,  'Я': 'Z' , 'Ч': 'X'  ,  'С': 'C' , 'М' : 'V' ,  'И': 'B' , 'Т': 'N'  , 'Ь': 'M'  , 'Б': ','  , 'Ю': '.'  ,};-->
+
+
+            {{ form.sum_service(type="number", class="form-control", step="0.01", min="0", max="1000000",
+            placeholder="0,00")}}
