@@ -1,4 +1,22 @@
 from site_app import db
+from werkzeug.security import generate_password_hash, check_password_hash
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_login = db.Column(db.String(64), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+    user_name = db.Column(db.String(50))
+
+    def __repr__(self):
+        return '<Пользователь {}>'.format(self.user_name)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 
 
 class RefDoctors(db.Model):
@@ -10,6 +28,7 @@ class RefDoctors(db.Model):
 
     def __repr__(self):
         return '<Врач {}>'.format(self.doctor_stat_code+' '+self.doctor_name)
+
 
 class DefectList(db.Model):
     __tablename__ = 'defect_list'
@@ -24,8 +43,6 @@ class DefectList(db.Model):
     sum_service = db.Column(db.Numeric(15, 2))
     sum_no_pay = db.Column(db.Numeric(15, 2))
     sum_penalty = db.Column(db.Numeric(15, 2))
-
-
 
 
 class RefDefectTypes(db.Model):
