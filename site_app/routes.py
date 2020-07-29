@@ -137,7 +137,9 @@ def defect_delete(defectid=0):
     if defectid == 0 or defectid is None:
         return redirect(url_for('defect_list'))
     if request.method == 'POST' and form.validate_on_submit():
-        DefectList.query.filter_by(defect_id=defectid).delete()
+        d = DefectList.query.filter_by(defect_id=defectid).first()
+        d.is_deleted = 1
+        db.session.add(d)
         db.session.commit()
         return redirect(url_for('defect_list'))
     return render_template('defectdelete.html', defectid=str(defectid), form=form)
