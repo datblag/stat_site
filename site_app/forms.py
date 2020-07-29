@@ -11,8 +11,9 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Запомнить пароль', id='_remember_me')
     submit = SubmitField('Войти')
 
-class DefectDeleteForm(FlaskForm):
 
+class DefectDeleteForm(FlaskForm):
+    pass
 
 
 class DefectEditForm(FlaskForm):
