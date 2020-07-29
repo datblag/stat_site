@@ -1,8 +1,16 @@
-from wtforms.fields import StringField, SubmitField, DateField, FloatField
+from wtforms.fields import StringField, SubmitField, DateField, FloatField, PasswordField, BooleanField
 from flask_wtf import FlaskForm
 from wtforms.widgets import TextArea
 from wtforms.validators import Length, NumberRange, InputRequired, DataRequired, ValidationError
 from site_app.models import RefDoctors
+
+
+class LoginForm(FlaskForm):
+    username = StringField('Логин', validators=[InputRequired(message=u'Заполните это поле')])
+    password = PasswordField('Пароль', validators=[InputRequired(message=u'Заполните это поле')])
+    remember_me = BooleanField('Запомнить пароль', id='_remember_me')
+    submit = SubmitField('Войти')
+
 
 class DefectEditForm(FlaskForm):
     history = StringField('№ мед. карты', id='_history', validators=[InputRequired(message=u'Заполните это поле'),
