@@ -48,6 +48,7 @@ class DefectList(db.Model):
     sum_service = db.Column(db.Numeric(15, 2))
     sum_no_pay = db.Column(db.Numeric(15, 2))
     sum_penalty = db.Column(db.Numeric(15, 2))
+    is_deleted = db.Column(db.Integer)
 
 
 class RefDefectTypes(db.Model):

@@ -11,6 +11,9 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Запомнить пароль', id='_remember_me')
     submit = SubmitField('Войти')
 
+class DefectDeleteForm(FlaskForm):
+
+
 
 class DefectEditForm(FlaskForm):
     history = StringField('№ мед. карты', id='_history', validators=[InputRequired(message=u'Заполните это поле'),

@@ -52,8 +52,8 @@ def index():
 @app.route('/defect/', methods=['GET'])
 @login_required
 def defect_list():
-
-    defects = DefectList.query.all()
+    # defects = DefectList.query.all()
+    defects = db.session.query(DefectList).filter(DefectList.is_deleted != 1).all()
     return render_template('defect.html', defects=defects)
 
 
@@ -81,6 +81,7 @@ def defect_edit(defectid=0):
     if request.method == 'POST' and form.validate_on_submit():
         if defectid == 0:
             defect_rec = DefectList()
+            defect_rec.is_deleted = 0
         defect_rec.history = form.history.data
 
         doctor_ref_rec = RefDoctors.query.filter_by(doctor_stat_code=form.doctor_code.data.strip()).first()
@@ -127,6 +128,68 @@ def defect_edit(defectid=0):
         form.sum_penalty.data = defect_rec.sum_penalty
 
     return render_template('defectedit.html', defectid=str(defectid), form=form)
+
+
+@app.route('/defect_delete/<int:defectid>', methods=['GET', 'POST'])
+@login_required
+def defect_delete(defectid=0):
+    form = DefectEditForm(request.form)
+    if defectid == 0:
+        pass
+    else:
+        defect_rec = DefectList.query.get_or_404(defectid)
+    # print(form.validate_on_submit(), request.method, request)
+    if request.method == 'POST' and form.validate_on_submit():
+        if defectid == 0:
+            defect_rec = DefectList()
+            defect_rec.is_deleted = 0
+        defect_rec.history = form.history.data
+
+        doctor_ref_rec = RefDoctors.query.filter_by(doctor_stat_code=form.doctor_code.data.strip()).first()
+        defect_rec.doctor_id_ref = doctor_ref_rec.doctor_id
+
+        defect_rec.error_list = form.defect_codes.data
+        defect_rec.error_comment = form.defect_comment.data
+
+        defect_rec.disease = form.disease.data
+
+        defect_rec.period_begin = form.period_start.data
+        defect_rec.period_end = form.period_end.data
+
+        defect_rec.sum_service = form.sum_service.data
+        defect_rec.sum_no_pay = form.sum_no_pay.data
+        defect_rec.sum_penalty = form.sum_penalty.data
+
+        db.session.add(defect_rec)
+        db.session.commit()
+        return redirect(url_for('defect_list'))
+
+    if defectid != 0:
+        form.history.data = defect_rec.history
+
+        if defect_rec.doctor_id_ref:
+            doctor_ref_rec = RefDoctors.query.get(defect_rec.doctor_id_ref)
+            if doctor_ref_rec:
+                form.doctor_code.data = doctor_ref_rec.doctor_stat_code
+            else:
+                form.doctor_code.data = ""
+
+        form.defect_codes.data = defect_rec.error_list
+        form.defect_comment.data = defect_rec.error_comment
+
+        form.disease.data = defect_rec.disease
+
+        form.period_start.data = defect_rec.period_begin
+        form.period_end.data = defect_rec.period_end
+
+        print(defect_rec.sum_service)
+
+        form.sum_service.data = defect_rec.sum_service
+        form.sum_no_pay.data = defect_rec.sum_no_pay
+        form.sum_penalty.data = defect_rec.sum_penalty
+
+    return render_template('defectedit.html', defectid=str(defectid), form=form)
+
 
 
 @app.route('/doctor/', methods=['GET'])
