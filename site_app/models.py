@@ -16,7 +16,7 @@ class Mkb10(db.Model):
     name = db.Column(db.Text, nullable=False)
     parent_code = db.Column(db.Integer, db.ForeignKey('mkb10.id'), index=True)
     parent = db.relationship(lambda: Mkb10, remote_side=id, backref='sub_mkb10')
-    addl_code = db.Column(db.Boolean)
+    addl_code = db.Column(db.Integer)
     actual = db.Column(db.Boolean)
     date = db.Column(db.Date)
 
