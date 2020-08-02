@@ -118,7 +118,7 @@ availableTags2 = availableTags1.responseText
 
 $(function() {
         $.ajax({
-            url: '{{ url_for("autocomplete2") }}'
+            url: '{{ url_for("autocomplete_defect_types") }}'
             }).done(function (data){
     $("#DefectCodesInput")
     // остановить смену фокуса, если выделен один из элементов автозаполнения
@@ -158,7 +158,7 @@ $(function() {
 
 $(function() {
         $.ajax({
-            url: '{{ url_for("autocomplete") }}'
+            url: '{{ url_for("autocomplete_doctors") }}'
             }).done(function (data){
                 $('#DoctorInput').autocomplete({
                     source: data,

@@ -18,7 +18,7 @@ login = LoginManager(app)
 login.login_view = 'login'
 
 from site_app import models
-from site_app import routes
+from site_app.routes import main_routes, autocomplete
 from site_app.routes import *
 from site_app.models import DefectList
 

@@ -1,23 +1,11 @@
 from site_app import app, db
-from flask import render_template, Response, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash
 from site_app.forms import DefectEditForm, LoginForm, DefectDeleteForm
-import json
-from site_app.models import DefectList, RefDoctors, RefDefectTypes
+from site_app.models import DefectList, RefDoctors
 from flask_login import current_user, login_user, login_required, logout_user
 from site_app.models import User, Mkb10
 from werkzeug.urls import url_parse
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
-
-doctors = []
-doctor_dbf = db.session.query(RefDoctors).all()
-for rec in doctor_dbf:
-    doctors.append({'label': rec.doctor_stat_code + " " + rec.doctor_name.strip(), 'value': rec.doctor_stat_code})
-
-
-defects = []
-defect_recs = db.session.query(RefDefectTypes).all()
-for rec in defect_recs:
-    defects.append({'label': rec.defect_type_code + " " + rec.defect_name.strip(), 'value': rec.defect_type_code})
 
 
 @app.route('/logout')
@@ -61,18 +49,6 @@ def defect_list():
     # defects = db.session.query(DefectList).filter(DefectList.is_deleted != 1).all()
     defects = pagination.items
     return render_template('defect.html', pagination=pagination, defects=defects)
-
-
-@app.route('/_autocomplete', methods=['GET'])
-def autocomplete():
-    print(doctors)
-    return Response(json.dumps(doctors), mimetype='application/json')
-
-
-@app.route('/_autocomplete2', methods=['GET'])
-def autocomplete2():
-    print(defects)
-    return Response(json.dumps(defects), mimetype='application/json')
 
 
 @app.route('/defect/<int:defectid>', methods=['GET', 'POST'])
