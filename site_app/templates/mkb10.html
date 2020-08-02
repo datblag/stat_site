@@ -17,11 +17,29 @@
     </tr>
   </thead>
   <tbody>
+    {% if mkb10_parent %}
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{url_for('mkb10_list') }}">Классы МКБ10</a></li>
+        {% for ds in mkb10_parent%}
+            {%  if not loop.last %}
+                <li class="breadcrumb-item"><a href="{{url_for('mkb10_list', code=ds.id) }}">{{ds}}</a></li>
+            {% else %}
+                <li class="breadcrumb-item">{{ds}}</li>
+            {% endif %}
+         {% endfor%}
+          </ol>
+        </nav>
 
+    {% endif %}
     {% for ds in mkb10%}
 
     <tr>
-      <td>{{ds.name}}</td>
+        {% if ds.sub_mkb10%}
+            <td><a href="{{url_for('mkb10_list', code=ds.id)}}">{{ds.code}} {{ds.name}}</a></td>
+        {% else %}
+            <td>{{ds.code}} {{ds.name}}</td>
+        {% endif %}
     </tr>
     {% endfor%}
 

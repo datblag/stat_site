@@ -152,9 +152,23 @@ def defect_delete(defectid=0):
 
 
 @app.route('/mkb10/', methods=['GET'])
-def mkb10_list():
-    mkb10 = Mkb10.query.filter_by(parent_code='').filter_by(code='').order_by(Mkb10.id)
-    return render_template('mkb10.html', mkb10=mkb10)
+@app.route('/mkb10/<code>', methods=['GET'])
+def mkb10_list(code=None):
+    mkb10_parent = []
+    if code:
+        mkb10 = Mkb10.query.filter_by(parent_code=code).order_by(Mkb10.id)
+        if mkb10:
+            parent = mkb10[0].parent
+            # parent = parent.parent
+            while parent:
+                mkb10_parent.append(parent)
+                parent = parent.parent
+        else:
+            return redirect(url_for('index'))
+    else:
+        mkb10 = Mkb10.query.filter_by(parent_code='').filter_by(code='').order_by(Mkb10.id)
+    print(mkb10_parent.reverse(), mkb10_parent)
+    return render_template('mkb10.html', mkb10=mkb10, mkb10_parent=mkb10_parent)
 
 
 @app.route('/doctor/', methods=['GET'])
