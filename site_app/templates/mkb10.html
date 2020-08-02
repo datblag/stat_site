@@ -1,0 +1,36 @@
+{% extends "base.html"%}
+{% import "_pagination.html" as macros %}
+        {% block title %}
+            Список врачей
+        {% endblock title %}
+
+{% block body %}
+
+
+
+{% endblock body %}
+{% block row %}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Наименование</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for ds in mkb10%}
+
+    <tr>
+      <td>{{ds.name}}</td>
+    </tr>
+    {% endfor%}
+
+
+  </tbody>
+</table>
+
+
+
+{% endblock row %}
+
+
