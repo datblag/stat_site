@@ -8,6 +8,19 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+class Mkb10(db.Model):
+    __tablename__ = 'mkb10'
+    rec_code = db.Column(db.String(8))
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(6))
+    name = db.Column(db.Text, nullable=False)
+    parent_code = db.Column(db.Integer, db.ForeignKey('mkb10.id'), index=True)
+    parent = db.relationship(lambda: Mkb10, remote_side=id, backref='sub_mkb10')
+    addl_code = db.Column(db.Integer)
+    actual = db.Column(db.Boolean)
+    date = db.Column(db.Date)
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_login = db.Column(db.String(64), index=True, unique=True)
