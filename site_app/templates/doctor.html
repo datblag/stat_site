@@ -1,4 +1,5 @@
 {% extends "base.html"%}
+{% import "_pagination.html" as macros %}
         {% block title %}
             Список врачей
         {% endblock title %}
@@ -33,3 +34,10 @@
 
 
 {% endblock row %}
+
+
+{% block body2 %}
+<div class="pagination">
+{{ macros.pagination_widget(pagination, '.doctor_list') }}
+</div>
+{% endblock %}

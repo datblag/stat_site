@@ -6,6 +6,7 @@ from site_app.models import DefectList, RefDoctors, RefDefectTypes
 from flask_login import current_user, login_user, login_required, logout_user
 from site_app.models import User, Mkb10
 from werkzeug.urls import url_parse
+from site_app.site_config import FLASKY_POSTS_PER_PAGE
 
 doctors = []
 doctor_dbf = db.session.query(RefDoctors).all()
@@ -52,9 +53,14 @@ def index():
 @app.route('/defect/', methods=['GET'])
 @login_required
 def defect_list():
-    # defects = DefectList.query.all()
-    defects = db.session.query(DefectList).filter(DefectList.is_deleted != 1).all()
-    return render_template('defect.html', defects=defects)
+    page = request.args.get('page', 1, type=int)
+    pagination = DefectList.query.filter(DefectList.is_deleted != 1).paginate(
+        page, per_page=FLASKY_POSTS_PER_PAGE,
+        error_out=False)
+
+    # defects = db.session.query(DefectList).filter(DefectList.is_deleted != 1).all()
+    defects = pagination.items
+    return render_template('defect.html', pagination=pagination, defects=defects)
 
 
 @app.route('/_autocomplete', methods=['GET'])
@@ -154,21 +160,11 @@ def mkb10_list():
 @app.route('/doctor/', methods=['GET'])
 @login_required
 def doctor_list():
-    # doctor_dbf = dbf.Table(os.path.join(STAT_PATH, 'doctor.dbf'))
-    # doctor_dbf.open()
-    # # index_doctor=doctor_dbf.create_index(lambda rec: (rec.scode.strip()))
-    # doctor_dbf.first_record
-    # for rec in doctor_dbf:
-    #     doctor_recs = db.session.query(RefDoctors).filter_by(doctor_stat_code=rec["SCODE"]).all()
-    #     if not doctor_recs:
-    #         doctor_rec = RefDoctors(doctor_stat_code=rec["SCODE"], doctor_name=rec["NAME"].strip())
-    #         db.session.add(doctor_rec)
-    #         db.session.commit()
-    #     print(doctor_recs)
-    #
-    # print("ALL")
-    # doctor_dbf.close()
-    # # print(cities)
-    doctors = db.session.query(RefDoctors).all()
-    return render_template('doctor.html', doctors=doctors)
+    page = request.args.get('page', 1, type=int)
+    pagination = RefDoctors.query.paginate(
+        page, per_page=FLASKY_POSTS_PER_PAGE,
+        error_out=False)
+
+    doctors = pagination.items
+    return render_template('doctor.html', pagination=pagination, doctors=doctors)
 
