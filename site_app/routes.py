@@ -4,7 +4,7 @@ from site_app.forms import DefectEditForm, LoginForm, DefectDeleteForm
 import json
 from site_app.models import DefectList, RefDoctors, RefDefectTypes
 from flask_login import current_user, login_user, login_required, logout_user
-from site_app.models import User
+from site_app.models import User, Mkb10
 from werkzeug.urls import url_parse
 
 doctors = []
@@ -143,6 +143,12 @@ def defect_delete(defectid=0):
         db.session.commit()
         return redirect(url_for('defect_list'))
     return render_template('defectdelete.html', defectid=str(defectid), form=form)
+
+
+@app.route('/mkb10/', methods=['GET'])
+def mkb10_list():
+    mkb10 = Mkb10.query.filter_by(parent_code='').filter_by(code='').order_by(Mkb10.id)
+    return render_template('mkb10.html', mkb10=mkb10)
 
 
 @app.route('/doctor/', methods=['GET'])
