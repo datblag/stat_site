@@ -5,7 +5,15 @@
         {% endblock title %}
 
 {% block body %}
-
+ <form style="inline" method="post" name="search">
+    {{form.hidden_tag()}}
+    {{ form.search(size=20) }}
+    <button type="submit" class="btn btn-primary">Найти</button>
+   {% if current_filter%}
+  <a href="{{url_for('doctor_list', doctorid=0)}}" class="btn btn-secondary" >Показать все</a>
+   {{current_filter}}
+   {% endif %}
+  </form>
 
 
 {% endblock body %}

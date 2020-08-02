@@ -5,6 +5,10 @@ from wtforms.validators import Length, NumberRange, InputRequired, DataRequired,
 from site_app.models import RefDoctors
 
 
+class SearchDoctorForm(FlaskForm):
+    search = StringField('search', validators=[DataRequired()])
+
+
 class LoginForm(FlaskForm):
     username = StringField('Логин', validators=[InputRequired(message=u'Заполните это поле')])
     password = PasswordField('Пароль', validators=[InputRequired(message=u'Заполните это поле')])
