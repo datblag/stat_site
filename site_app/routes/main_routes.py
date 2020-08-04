@@ -142,7 +142,7 @@ def mkb10_list(code=None):
         else:
             return redirect(url_for('index'))
     else:
-        mkb10 = Mkb10.query.filter_by(parent_code='').filter_by(code='').order_by(Mkb10.id)
+        mkb10 = Mkb10.query.filter_by(parent_code=None).filter_by(code='').order_by(Mkb10.id)
     print(mkb10_parent.reverse(), mkb10_parent)
     return render_template('mkb10.html', mkb10=mkb10, mkb10_parent=mkb10_parent)
 

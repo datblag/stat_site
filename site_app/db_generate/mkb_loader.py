@@ -12,9 +12,10 @@ def load_mkb():
             ds = Mkb10.query.get(line['id'])
             if ds is None:
                 ds = Mkb10()
-            ds.id = line['id']
+            ds.id = int(line['id'])
             ds.rec_code = line['rec_code']
-            ds.parent_code = line['parent_code']
+            if line['parent_code']:
+                ds.parent_code = int(line['parent_code'])
             ds.code = line['code']
             ds.name = line['name']
             ds.actual = True if line['actual'] else False
@@ -24,4 +25,5 @@ def load_mkb():
             db.session.add(ds)
 
     db.session.commit()
+
 
