@@ -160,14 +160,14 @@ def doctor_list(doctorid=None):
         session['query'] = form.data['search']
         current_filter = session['query'] if 'query' in session else None
         page = 1
-        pagination = RefDoctors.query.filter(RefDoctors.doctor_name.like('%'+session['query']+'%')).paginate(
+        pagination = RefDoctors.query.filter(RefDoctors.doctor_name.ilike('%'+session['query']+'%')).paginate(
             page, per_page=FLASKY_POSTS_PER_PAGE,
             error_out=False)
         doctors = pagination.items
         return render_template('doctor.html', pagination=pagination, doctors=doctors, form=form, current_filter=current_filter)
     query = RefDoctors.query
     if 'query' in session:
-        query = query.filter(RefDoctors.doctor_name.like('%'+session['query']+'%'))
+        query = query.filter(RefDoctors.doctor_name.ilike('%'+session['query']+'%'))
     pagination = query.paginate(
         page, per_page=FLASKY_POSTS_PER_PAGE,
         error_out=False)
