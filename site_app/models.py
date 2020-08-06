@@ -1,6 +1,7 @@
 from site_app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+import datetime
 
 
 @login.user_loader
@@ -21,7 +22,8 @@ class Patients(db.Model):
     defects_smo_expert = db.relationship('DefectList', backref='patient', lazy='dynamic')
 
     def __repr__(self):
-        return '<{} {} {} {}>'.format(self.fam, self.im, self.ot, self.birthday)
+        return '{} {} {} {}'.format(self.fam, self.im, self.ot, datetime.datetime.strftime(self.birthday, '%d.%m.%Y'))
+
 
 
 
@@ -75,7 +77,6 @@ class RefDoctors(db.Model):
 class DefectList(db.Model):
     __tablename__ = 'defect_list'
     defect_id = db.Column(db.Integer, primary_key=True)
-    history = db.Column(db.String(6))
     doctor_id_ref = db.Column(db.Integer, db.ForeignKey('ref_doctors.doctor_id'))
     patient_id_ref = db.Column(db.Integer, db.ForeignKey('patients.patient_id'))
     error_list = db.Column(db.String(50))

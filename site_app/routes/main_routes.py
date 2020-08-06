@@ -62,7 +62,6 @@ def defect_list():
 @login_required
 def defect_edit(defectid=0):
     form = DefectEditForm(request.form)
-    print(session['patient_id'])
     if defectid == 0:
         pass
     else:

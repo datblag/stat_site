@@ -5,10 +5,6 @@
         {% endblock title %}
 
 {% block body %}
-    <div class="alert alert-dark" role="alert">
-        <a href="{{url_for('defect_edit', defectid=0)}}" class="alert-link">Создать дефект</a>
-    </div>
-
 {% endblock body %}
 {% block row %}
 <table class="table">
@@ -17,7 +13,7 @@
       <th scope="col"></th>
       <th scope="col">Врач</th>
       <th scope="col">Дефект</th>
-      <th scope="col">№ истории</th>
+      <th scope="col">Пациент</th>
       <th scope="col">Сумма</th>
       <th scope="col">Подлежит оплате</th>
       <th scope="col"></th>
@@ -31,7 +27,7 @@
       <td><a href="{{url_for('defect_edit', defectid=defect.defect_id)}}">Изменить</a></td>
       <td>{{defect.doctor.doctor_name}}</a></td>
       <td>{{defect.error_list}}</td>
-      <td>{{defect.patient.history}}</td>
+      <td>{{defect.patient}}</td>
       <td>{{defect.sum_service}}</td>
       <td>{{defect.sum_service-defect.sum_no_pay-defect.sum_penalty}}</td>
       <td><a href="{{url_for('defect_delete', defectid=defect.defect_id)}}">Удалить</a></td>
