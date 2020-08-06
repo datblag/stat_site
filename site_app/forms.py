@@ -16,6 +16,14 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
+class AddPatientForm(FlaskForm):
+    fam = StringField('Фамилия', validators=[InputRequired(message=u'Заполните это поле')])
+    im = StringField('Имя', validators=[InputRequired(message=u'Заполните это поле')])
+    ot = StringField('Отчество')
+    birthday = DateField('Дата рождения', validators=[InputRequired(message=u'Заполните это поле')])
+    submit = SubmitField('Найти в МИС')
+
+
 class DefectDeleteForm(FlaskForm):
     pass
 

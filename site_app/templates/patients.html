@@ -1,0 +1,46 @@
+{% extends "base.html"%}
+{% import "_pagination.html" as macros %}
+        {% block title %}
+            Список пациентов
+        {% endblock title %}
+
+{% block body %}
+
+{% endblock body %}
+{% block row %}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Номер карты</th>
+      <th scope="col">Фамилия</th>
+      <th scope="col">Имя</th>
+      <th scope="col">Отчество</th>
+      <th scope="col">Дата рождения</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for patient in patients%}
+
+    <tr>
+      <td>{{patient.num}}</a></td>
+      <td>{{patient.fam}}</a></td>
+      <td>{{patient.im}}</td>
+      <td>{{patient.ot}}</td>
+      <td>{{patient.birthday}}</td>
+    </tr>
+    {% endfor%}
+
+
+  </tbody>
+</table>
+
+
+
+{% endblock row %}
+
+{% block body2 %}
+<div class="pagination">
+{{ macros.pagination_widget(pagination, '.defect_list') }}
+</div>
+{% endblock %}

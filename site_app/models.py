@@ -8,6 +8,22 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+class Patients(db.Model):
+    __tablename__ = 'patients'
+    patient_id = db.Column(db.Integer, primary_key=True)
+    fam = db.Column(db.String(40))
+    im = db.Column(db.String(40))
+    ot = db.Column(db.String(40))
+    birthday = db.Column(db.Date)
+    num = db.Column(db.String(40))
+    mis_id = db.Column(db.Integer)
+    is_deleted = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '<{}{}{}{}>'.format(self.fam, self.im, self.ot, self.birthday)
+
+
+
 class Mkb10(db.Model):
     __tablename__ = 'mkb10'
     rec_code = db.Column(db.String(9))

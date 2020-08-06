@@ -1,7 +1,7 @@
 from site_app import app, db
 from flask import render_template, request, redirect, url_for, flash, session
 from site_app.forms import DefectEditForm, LoginForm, DefectDeleteForm, SearchDoctorForm
-from site_app.models import DefectList, RefDoctors
+from site_app.models import DefectList, RefDoctors, Patients
 from flask_login import current_user, login_user, login_required, logout_user
 from site_app.models import User, Mkb10
 from werkzeug.urls import url_parse
@@ -36,6 +36,18 @@ def login():
 @login_required
 def index():
     return render_template('index.html')
+
+
+@app.route('/patients/', methods=['GET'])
+@login_required
+def patients_list():
+    page = request.args.get('page', 1, type=int)
+    pagination = Patients.query.filter(Patients.is_deleted != 1).paginate(
+        page, per_page=FLASKY_POSTS_PER_PAGE,
+        error_out=False)
+
+    patients = pagination.items
+    return render_template('patients.html', pagination=pagination, patients=patients)
 
 
 @app.route('/defect/', methods=['GET'])
