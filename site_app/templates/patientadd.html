@@ -1,16 +1,56 @@
 {% extends "base.html"%}
-{% import "_pagination.html" as macros %}
         {% block title %}
-            Список пациентов
+            Добавление пациента
         {% endblock title %}
 
 {% block body %}
+<form method="post" novalidate>
 
-{% endblock body %}
+    {{form.hidden_tag()}}
+ <div class="form-group">
+
+    <div class="row">
+        <div class="col">
+            {{ form.fam.label }}
+            {{ form.fam(type="text", class="form-control")}}
+            {% for error in form.errors.fam %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+
+            {{ form.im.label }}
+            {{ form.im(type="text", class="form-control")}}
+            {% for error in form.errors.im %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+
+            {{ form.ot.label }}
+            {{ form.ot(type="text", class="form-control")}}
+            {% for error in form.errors.ot %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+
+            {{ form.birthday.label }}
+            {{ form.birthday(type="date", class="form-control")}}
+            {% for error in form.errors.birthday %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+
+        </div>
+    </div>
+ </div>
+    <div class="row">
+      <button type="submit" class="btn btn-primary">Найти в МИС</button>
+    </div>
+</form>
+  {% endblock body %}
+
 {% block row %}
+{%if patients is defined and patients|length  %}
+<br/><br/>
 <table class="table">
   <thead class="thead-dark">
     <tr>
+      <th scope="col"></th>
       <th scope="col">Номер карты</th>
       <th scope="col">Фамилия</th>
       <th scope="col">Имя</th>
@@ -20,14 +60,15 @@
   </thead>
   <tbody>
 
-    {% for patient in patients%}
+    {% for patient in patients %}
 
     <tr>
-      <td>{{patient.num}}</a></td>
-      <td>{{patient.fam}}</a></td>
-      <td>{{patient.im}}</td>
+      <td><a href="{{url_for('patient_save_from_mis', mkabid=patient.mkabid)}}">Добавить</a></td>
+      <td>{{patient.num}}</td>
+      <td>{{patient.family}}</td>
+      <td>{{patient.name}}</td>
       <td>{{patient.ot}}</td>
-      <td>{{patient.birthday}}</td>
+      <td>{{patient.date_bd|formatdate}}</td>
     </tr>
     {% endfor%}
 
@@ -37,10 +78,12 @@
 
 
 
+
+
+
+{% endif %}
 {% endblock row %}
 
-{% block body2 %}
-<div class="pagination">
-{{ macros.pagination_widget(pagination, '.defect_list') }}
-</div>
-{% endblock %}
+
+
+

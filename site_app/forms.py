@@ -1,7 +1,7 @@
 from wtforms.fields import StringField, SubmitField, DateField, FloatField, PasswordField, BooleanField
 from flask_wtf import FlaskForm
 from wtforms.widgets import TextArea
-from wtforms.validators import Length, NumberRange, InputRequired, DataRequired, ValidationError
+from wtforms.validators import Length, NumberRange, InputRequired, DataRequired, ValidationError, Optional
 from site_app.models import RefDoctors
 
 
@@ -20,7 +20,7 @@ class AddPatientForm(FlaskForm):
     fam = StringField('Фамилия', validators=[InputRequired(message=u'Заполните это поле')])
     im = StringField('Имя', validators=[InputRequired(message=u'Заполните это поле')])
     ot = StringField('Отчество')
-    birthday = DateField('Дата рождения', validators=[InputRequired(message=u'Заполните это поле')])
+    birthday = DateField('Дата рождения', validators=[Optional()])
     submit = SubmitField('Найти в МИС')
 
 

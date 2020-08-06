@@ -5,6 +5,9 @@
         {% endblock title %}
 
 {% block body %}
+    <div class="alert alert-dark" role="alert">
+        <a href="{{url_for('patient_add')}}" class="alert-link">Добавить пациента</a>
+    </div>
 
 {% endblock body %}
 {% block row %}
@@ -27,7 +30,7 @@
       <td>{{patient.fam}}</a></td>
       <td>{{patient.im}}</td>
       <td>{{patient.ot}}</td>
-      <td>{{patient.birthday}}</td>
+      <td>{{patient.birthday|formatdate}}</td>
     </tr>
     {% endfor%}
 
@@ -41,6 +44,8 @@
 
 {% block body2 %}
 <div class="pagination">
-{{ macros.pagination_widget(pagination, '.defect_list') }}
+{{ macros.pagination_widget(pagination, '.patients_list') }}
 </div>
 {% endblock %}
+
+
