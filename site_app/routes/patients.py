@@ -1,9 +1,9 @@
 from site_app import app
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, session
 from site_app.models import Patients
 from flask_login import login_required
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
-from site_app.forms import AddPatientForm
+from site_app.forms import AddPatientForm, PatientForm
 from site_app.mis_db import HltMkab, session_mis
 from site_app import db
 
@@ -48,11 +48,29 @@ def patient_save_from_mis(mkabid=0):
             return redirect(url_for('patients_list'))
 
 
+@app.route('/patient_open/<int:patient_id>', methods=['GET', 'POST'])
+@login_required
+def patient_open(patient_id=0):
+    if patient_id:
+        patient_rec = Patients.query.get(patient_id)
+        if patient_rec is None:
+            return redirect(url_for('patients_list'))
+        form = PatientForm()
+        form.fam.data = patient_rec.fam
+        form.im.data = patient_rec.im
+        form.ot.data = patient_rec.ot
+        form.birthday.data = patient_rec.birthday
+        form.num.data = patient_rec.num
+        session['patient_id'] = patient_rec.patient_id
+        return render_template('patientopen.html', form=form, patient=patient_rec)
+    return redirect(url_for('patients_list'))
+
 @app.route('/patients/', methods=['GET'])
 @login_required
 def patients_list():
+    if 'patient_id' in session:
+        session.pop('patient_id', None)
     page = request.args.get('page', 1, type=int)
-    print(page)
     pagination = Patients.query.filter(Patients.is_deleted != 1).\
         order_by(Patients.fam, Patients.im, Patients.ot).paginate(page, per_page=FLASKY_POSTS_PER_PAGE, error_out=False)
 

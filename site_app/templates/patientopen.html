@@ -1,0 +1,81 @@
+{% extends "base.html"%}
+        {% block title %}
+            Пациент
+        {% endblock title %}
+
+{% block body %}
+<form method="post" novalidate>
+
+    {{form.hidden_tag()}}
+ <div class="form-group">
+
+    <div class="row">
+        <div class="col">
+            {{ form.fam.label }}
+            {{ form.fam(type="text", class="form-control", readonly=true)}}
+
+            {{ form.im.label }}
+            {{ form.im(type="text", class="form-control", readonly=true)}}
+
+            {{ form.ot.label }}
+            {{ form.ot(type="text", class="form-control", readonly=true)}}
+
+            {{ form.birthday.label }}
+            {{ form.birthday(type="date", class="form-control", readonly=true)}}
+
+            {{ form.num.label }}
+            {{ form.num(type="text", class="form-control", readonly=true)}}
+
+        </div>
+    </div>
+ </div>
+        <a href="{{url_for('defect_edit', defectid=0)}}" class="btn btn-primary" >Создать дефект</a>
+        <a href="{{url_for('patients_list')}}" class="btn btn-secondary" >Закрыть</a>
+</form>
+
+
+  {% endblock  %}
+
+
+
+{% block row %}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Врач</th>
+      <th scope="col">Дефект</th>
+      <th scope="col">№ истории</th>
+      <th scope="col">Сумма</th>
+      <th scope="col">Подлежит оплате</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for defect in patient.defects_smo_expert%}
+
+    <tr>
+      <td><a href="{{url_for('defect_edit', defectid=defect.defect_id)}}">Изменить</a></td>
+      <td>{{defect.doctor.doctor_name}}</a></td>
+      <td>{{defect.error_list}}</td>
+      <td>{{defect.history}}</td>
+      <td>{{defect.sum_service}}</td>
+      <td>{{defect.sum_service-defect.sum_no_pay-defect.sum_penalty}}</td>
+      <td><a href="{{url_for('defect_delete', defectid=defect.defect_id)}}">Удалить</a></td>
+    </tr>
+    {% endfor%}
+
+
+  </tbody>
+</table>
+
+
+
+{% endblock row %}
+
+
+
+
+
+

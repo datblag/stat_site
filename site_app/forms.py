@@ -24,14 +24,20 @@ class AddPatientForm(FlaskForm):
     submit = SubmitField('Найти в МИС')
 
 
+class PatientForm(FlaskForm):
+    fam = StringField('Фамилия', validators=[InputRequired(message=u'Заполните это поле')])
+    im = StringField('Имя', validators=[InputRequired(message=u'Заполните это поле')])
+    ot = StringField('Отчество')
+    birthday = DateField('Дата рождения', validators=[Optional()])
+    num = StringField('N карты', validators=[Optional()])
+
+
 class DefectDeleteForm(FlaskForm):
     pass
 
 
 class DefectEditForm(FlaskForm):
-    history = StringField('№ мед. карты', id='_history', validators=[InputRequired(message=u'Заполните это поле'),
-                                                                     Length(min=6, max=6,
-                                                                            message=u'Необходжимо ввести 6 символов')])
+    history = StringField('№ мед. карты', id='_history')
     doctor_code = StringField('Код врача', id='DoctorInput', validators=[InputRequired(message=u'Заполните это поле'),
                                                                          Length(min=4, max=4,
                                                                          message=u'Необходжимо ввести 4 символа')])
@@ -51,6 +57,7 @@ class DefectEditForm(FlaskForm):
                                                                                u'Сумма услуги должна быть больше нуля')])
     sum_no_pay = FloatField('Не подлежит оплате', id='sum_no_pay', validators=[InputRequired()])
     sum_penalty = FloatField('Сумма штрафа', id='sum_penalty')
+    fam = StringField('Фамилия')
 
     @staticmethod
     def validate_doctor_code(self, doctor_code):

@@ -31,7 +31,7 @@
       <td><a href="{{url_for('defect_edit', defectid=defect.defect_id)}}">Изменить</a></td>
       <td>{{defect.doctor.doctor_name}}</a></td>
       <td>{{defect.error_list}}</td>
-      <td>{{defect.history}}</td>
+      <td>{{defect.patient.history}}</td>
       <td>{{defect.sum_service}}</td>
       <td>{{defect.sum_service-defect.sum_no_pay-defect.sum_penalty}}</td>
       <td><a href="{{url_for('defect_delete', defectid=defect.defect_id)}}">Удалить</a></td>

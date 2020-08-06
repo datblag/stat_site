@@ -3,7 +3,7 @@ from flask import render_template, request, redirect, url_for, flash, session
 from site_app.forms import DefectEditForm, LoginForm, DefectDeleteForm, SearchDoctorForm
 from site_app.models import DefectList, RefDoctors
 from flask_login import current_user, login_user, login_required, logout_user
-from site_app.models import User, Mkb10
+from site_app.models import User, Mkb10, Patients
 from werkzeug.urls import url_parse
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
 
@@ -62,6 +62,7 @@ def defect_list():
 @login_required
 def defect_edit(defectid=0):
     form = DefectEditForm(request.form)
+    print(session['patient_id'])
     if defectid == 0:
         pass
     else:
@@ -71,6 +72,7 @@ def defect_edit(defectid=0):
         if defectid == 0:
             defect_rec = DefectList()
             defect_rec.is_deleted = 0
+            defect_rec.patient = Patients.query.get(session['patient_id'])
         defect_rec.history = form.history.data
 
         doctor_ref_rec = RefDoctors.query.filter_by(doctor_stat_code=form.doctor_code.data.strip()).first()
@@ -90,7 +92,7 @@ def defect_edit(defectid=0):
 
         db.session.add(defect_rec)
         db.session.commit()
-        return redirect(url_for('defect_list'))
+        return redirect(url_for('patient_open', patient_id=session['patient_id']))
 
     if defectid != 0:
         form.history.data = defect_rec.history
@@ -110,7 +112,6 @@ def defect_edit(defectid=0):
         form.period_start.data = defect_rec.period_begin
         form.period_end.data = defect_rec.period_end
 
-        print(defect_rec.sum_service)
 
         form.sum_service.data = defect_rec.sum_service
         form.sum_no_pay.data = defect_rec.sum_no_pay

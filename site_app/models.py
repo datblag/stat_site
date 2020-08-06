@@ -18,9 +18,10 @@ class Patients(db.Model):
     num = db.Column(db.String(40))
     mis_id = db.Column(db.Integer)
     is_deleted = db.Column(db.Integer)
+    defects_smo_expert = db.relationship('DefectList', backref='patient', lazy='dynamic')
 
     def __repr__(self):
-        return '<{}{}{}{}>'.format(self.fam, self.im, self.ot, self.birthday)
+        return '<{} {} {} {}>'.format(self.fam, self.im, self.ot, self.birthday)
 
 
 
@@ -76,6 +77,7 @@ class DefectList(db.Model):
     defect_id = db.Column(db.Integer, primary_key=True)
     history = db.Column(db.String(6))
     doctor_id_ref = db.Column(db.Integer, db.ForeignKey('ref_doctors.doctor_id'))
+    patient_id_ref = db.Column(db.Integer, db.ForeignKey('patients.patient_id'))
     error_list = db.Column(db.String(50))
     error_comment = db.Column(db.String(250))
     period_begin = db.Column(db.Date)
