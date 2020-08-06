@@ -6,7 +6,8 @@ from site_app.models import RefDoctors, RefDefectTypes
 import logging
 
 
-def main():
+def load_doctors():
+    logging.warning("doctors load start")
     doctor_dbf = dbf.Table(os.path.join(STAT_PATH, 'doctor.dbf'))
     doctor_dbf.open()
     for rec in doctor_dbf:
@@ -17,10 +18,13 @@ def main():
             db.session.commit()
         logging.warning(doctor_recs)
 
-    logging.warning("ALL")
+    logging.warning("doctors load complete")
     doctor_dbf.close()
 
-    defect_types_dbf = dbf.Table(os.path.join(STAT_PATH, 'defect_type.dbf'))
+
+def load_defects():
+
+    defect_types_dbf = dbf.Table(r'site_app\files\defect_type.dbf')
     defect_types_dbf.open()
 
     for rec in defect_types_dbf:
@@ -34,7 +38,4 @@ def main():
     logging.warning("ALL")
     defect_types_dbf.close()
 
-
-if __name__ == '__main__':
-    main()
 
