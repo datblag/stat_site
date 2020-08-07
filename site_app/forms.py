@@ -37,7 +37,6 @@ class DefectDeleteForm(FlaskForm):
 
 
 class DefectEditForm(FlaskForm):
-    history = StringField('№ мед. карты', id='_history')
     doctor_code = StringField('Код врача', id='DoctorInput', validators=[InputRequired(message=u'Заполните это поле'),
                                                                          Length(min=4, max=4,
                                                                          message=u'Необходжимо ввести 4 символа')])

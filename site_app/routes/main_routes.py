@@ -72,7 +72,6 @@ def defect_edit(defectid=0):
             defect_rec = DefectList()
             defect_rec.is_deleted = 0
             defect_rec.patient = Patients.query.get(session['patient_id'])
-        defect_rec.history = form.history.data
 
         doctor_ref_rec = RefDoctors.query.filter_by(doctor_stat_code=form.doctor_code.data.strip()).first()
         defect_rec.doctor_id_ref = doctor_ref_rec.doctor_id
@@ -91,11 +90,12 @@ def defect_edit(defectid=0):
 
         db.session.add(defect_rec)
         db.session.commit()
-        return redirect(url_for('patient_open', patient_id=session['patient_id']))
+        if 'patient_id' in session:
+            return redirect(url_for('patient_open', patient_id=session['patient_id']))
+        else:
+            return redirect(url_for('defect_list'))
 
     if defectid != 0:
-        form.history.data = defect_rec.history
-
         if defect_rec.doctor_id_ref:
             doctor_ref_rec = RefDoctors.query.get(defect_rec.doctor_id_ref)
             if doctor_ref_rec:
