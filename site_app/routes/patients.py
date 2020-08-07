@@ -38,7 +38,8 @@ def patient_save_from_mis(mkabid=0):
         query = query.filter(HltMkab.mkabid==mkabid)
         query = query.limit(1).all()
         if query:
-            if not Patients.query.filter(Patients.mis_id == query[0].mkabid).all():
+            query_patients = Patients.query.filter(Patients.mis_id == query[0].mkabid).all()
+            if not query_patients:
                 patient_new_rec = Patients()
                 patient_new_rec.fam = query[0].family
                 patient_new_rec.im = query[0].name
@@ -49,7 +50,10 @@ def patient_save_from_mis(mkabid=0):
                 patient_new_rec.is_deleted = 0
                 db.session.add(patient_new_rec)
                 db.session.commit()
-            return redirect(url_for('patients_list'))
+                print(patient_new_rec.patient_id)
+                return redirect(url_for('patient_open', patient_id=patient_new_rec.patient_id))
+
+            return redirect(url_for('patient_open', patient_id=query_patients[0].patient_id))
 
 
 @app.route('/patient_open/<int:patient_id>', methods=['GET', 'POST'])
