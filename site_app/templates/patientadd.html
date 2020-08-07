@@ -11,6 +11,13 @@
 
     <div class="row">
         <div class="col">
+            {{ form.num.label }}
+            {{ form.num(type="text", class="form-control")}}
+            {% for error in form.errors.num %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+
+
             {{ form.fam.label }}
             {{ form.fam(type="text", class="form-control")}}
             {% for error in form.errors.fam %}

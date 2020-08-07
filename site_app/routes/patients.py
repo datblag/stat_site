@@ -13,12 +13,16 @@ from site_app import db
 def patient_add():
     form = AddPatientForm()
     if request.method == 'POST' and form.validate_on_submit():
-        query = session_mis.query(HltMkab)
-        query = query.filter(HltMkab.family.ilike('%'+form.fam.data+'%'))
-        query = query.filter(HltMkab.name.ilike('%'+form.im.data+'%'))
-        query = query.filter(HltMkab.ot.ilike('%'+form.ot.data+'%'))
-        if form.birthday.data:
-            query = query.filter(HltMkab.date_bd == form.birthday.data)
+        if form.num.data:
+            query = session_mis.query(HltMkab)
+            query = query.filter(HltMkab.num.ilike('%' + form.num.data + '%'))
+        else:
+            query = session_mis.query(HltMkab)
+            query = query.filter(HltMkab.family.ilike('%'+form.fam.data+'%'))
+            query = query.filter(HltMkab.name.ilike('%'+form.im.data+'%'))
+            query = query.filter(HltMkab.ot.ilike('%'+form.ot.data+'%'))
+            if form.birthday.data:
+                query = query.filter(HltMkab.date_bd == form.birthday.data)
 
         query = query.order_by(HltMkab.family, HltMkab.name, HltMkab.ot)
         return render_template('patientadd.html', form=form, patients=query.limit(100).all())

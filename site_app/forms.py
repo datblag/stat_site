@@ -17,12 +17,30 @@ class LoginForm(FlaskForm):
 
 
 class AddPatientForm(FlaskForm):
-    fam = StringField('Фамилия', validators=[InputRequired(message=u'Заполните это поле')])
-    im = StringField('Имя', validators=[InputRequired(message=u'Заполните это поле')])
+    num = StringField('Номер карты')
+    fam = StringField('Фамилия')
+    im = StringField('Имя')
     ot = StringField('Отчество')
     birthday = DateField('Дата рождения', validators=[Optional()])
     submit = SubmitField('Найти в МИС')
 
+    @staticmethod
+    def validate_num(self, num):
+        if not self.fam.data or self.fam.data is None and not self.im.data or self.im.data is None:
+            if not num.data or num.data is None:
+                raise ValidationError('Ошибка! Введите номер карты, или фамилию и имя')
+
+    @staticmethod
+    def validate_fam(self, fam):
+        if not self.num.data or self.num.data is None:
+            if not fam.data or fam.data is None:
+                raise ValidationError('Ошибка! Введите фамилию и имя, или номер карты')
+
+    @staticmethod
+    def validate_im(self, im):
+        if not self.num.data or self.num.data is None:
+            if not im.data or im.data is None:
+                raise ValidationError('Ошибка! Введите фамилию и имя, или номер карты')
 
 class PatientForm(FlaskForm):
     fam = StringField('Фамилия', validators=[InputRequired(message=u'Заполните это поле')])
