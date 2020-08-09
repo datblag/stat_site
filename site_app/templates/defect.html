@@ -29,7 +29,7 @@
       <td>{{defect.error_list}}</td>
       <td>{{defect.patient}}</td>
       <td>{{defect.sum_service}}</td>
-      <td>{{defect.sum_service-defect.sum_no_pay-defect.sum_penalty}}</td>
+      <td>{{defect.get_sum_total()}}</td>
       <td><a href="{{url_for('defect_delete', defectid=defect.defect_id)}}">Удалить</a></td>
     </tr>
     {% endfor%}

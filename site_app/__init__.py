@@ -19,6 +19,7 @@ login.login_view = 'login'
 
 from site_app import models
 from site_app.routes import main_routes, autocomplete, patients
+from site_app.routes.reports import main_reports_routes
 from site_app.models import DefectList
 
 

@@ -89,6 +89,11 @@ class DefectList(db.Model):
     sum_penalty = db.Column(db.Numeric(15, 2))
     is_deleted = db.Column(db.Integer)
 
+    def get_list(self):
+        return self.query.filter_by(is_deleted=0)
+
+    def get_sum_total(self):
+        return self.sum_service-self.sum_no_pay-self.sum_penalty
 
 class RefDefectTypes(db.Model):
     __tablename__ = 'ref_defect_types'
