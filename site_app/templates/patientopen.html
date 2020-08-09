@@ -53,8 +53,7 @@
   </thead>
   <tbody>
 
-    {% for defect in patient.defects_smo_expert%}
-    {% if defect.is_deleted == 0 %}
+    {% for defect in defect_list%}
     <tr>
       <td><a href="{{url_for('defect_edit', defectid=defect.defect_id)}}">Изменить</a></td>
       <td>{{defect.doctor.doctor_name}}</a></td>
@@ -63,7 +62,6 @@
       <td>{{defect.sum_service-defect.sum_no_pay-defect.sum_penalty}}</td>
       <td><a href="{{url_for('defect_delete', defectid=defect.defect_id)}}">Удалить</a></td>
     </tr>
-    {% endif %}
     {% endfor%}
 
 

@@ -1,6 +1,6 @@
 from site_app import app
 from flask import render_template, request, redirect, url_for, session
-from site_app.models import Patients
+from site_app.models import Patients, DefectList
 from flask_login import login_required
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
 from site_app.forms import AddPatientForm, PatientForm
@@ -50,7 +50,6 @@ def patient_save_from_mis(mkabid=0):
                 patient_new_rec.is_deleted = 0
                 db.session.add(patient_new_rec)
                 db.session.commit()
-                print(patient_new_rec.patient_id)
                 return redirect(url_for('patient_open', patient_id=patient_new_rec.patient_id))
 
             return redirect(url_for('patient_open', patient_id=query_patients[0].patient_id))
@@ -70,7 +69,8 @@ def patient_open(patient_id=0):
         form.birthday.data = patient_rec.birthday
         form.num.data = patient_rec.num
         session['patient_id'] = patient_rec.patient_id
-        return render_template('patientopen.html', form=form, patient=patient_rec)
+        return render_template('patientopen.html', form=form, patient=patient_rec,
+               defect_list=DefectList().get_list(patient_id=patient_rec.patient_id).all())
     return redirect(url_for('patients_list'))
 
 @app.route('/patients/', methods=['GET'])
