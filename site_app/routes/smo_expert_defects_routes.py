@@ -11,9 +11,12 @@ from site_app.site_config import FLASKY_POSTS_PER_PAGE
 @login_required
 def defect_list():
     page = request.args.get('page', 1, type=int)
-    pagination = DefectList.query.filter(DefectList.is_deleted != 1).paginate(
+    pagination = DefectList.get_list(DefectList).paginate(
         page, per_page=FLASKY_POSTS_PER_PAGE,
         error_out=False)
+    # pagination = DefectList.query.filter(DefectList.is_deleted != 1).paginate(
+    #     page, per_page=FLASKY_POSTS_PER_PAGE,
+    #     error_out=False)
 
     # defects = db.session.query(DefectList).filter(DefectList.is_deleted != 1).all()
     defects = pagination.items
@@ -38,6 +41,7 @@ def defect_edit(defectid=0):
         doctor_ref_rec = RefDoctors.query.filter_by(doctor_stat_code=form.doctor_code.data.strip()).first()
         defect_rec.doctor_id_ref = doctor_ref_rec.doctor_id
 
+        defect_rec.expert_date = form.expert_date.data
         defect_rec.error_list = form.defect_codes.data
         defect_rec.error_comment = form.defect_comment.data
 
@@ -67,6 +71,7 @@ def defect_edit(defectid=0):
 
         form.defect_codes.data = defect_rec.error_list
         form.defect_comment.data = defect_rec.error_comment
+        form.expert_date.data = defect_rec.expert_date
 
         form.disease.data = defect_rec.disease
 

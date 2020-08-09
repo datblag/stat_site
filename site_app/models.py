@@ -88,9 +88,10 @@ class DefectList(db.Model):
     sum_no_pay = db.Column(db.Numeric(15, 2))
     sum_penalty = db.Column(db.Numeric(15, 2))
     is_deleted = db.Column(db.Integer)
+    expert_date = db.Column(db.Date)
 
     def get_list(self):
-        return self.query.filter_by(is_deleted=0)
+        return self.query.filter_by(is_deleted=0).order_by(DefectList.defect_id.desc())
 
     def get_sum_total(self):
         return self.sum_service-self.sum_no_pay-self.sum_penalty

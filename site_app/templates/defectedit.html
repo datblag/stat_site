@@ -51,11 +51,23 @@
 
         </div>
     </div>
+    <div class="row">
+        <div class="col">
     {{ form.disease.label }}
     {{ form.disease(type="text", class="form-control")}}
         {% for error in form.errors.disease %}
                 <span style="color: red;">[{{error}}]</span>
         {% endfor %}<br>
+        </div>
+        <div class="col">
+         {{ form.expert_date.label }}
+        {{ form.expert_date(type="date", class="form-control")}}
+        {% for error in form.errors.expert_date %}
+                <span style="color: red;">[{{error}}]</span>
+        {% endfor %}<br>
+
+        </div>
+    </div>
   </div>
 
  <div class="form-group">
