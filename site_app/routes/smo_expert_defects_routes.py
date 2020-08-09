@@ -1,9 +1,9 @@
 from site_app import app, db
-from flask import render_template, request, redirect, url_for, flash, session
-from site_app.forms import DefectEditForm, LoginForm, DefectDeleteForm, SearchDoctorForm
+from flask import render_template, request, redirect, url_for, session
+from site_app.forms import DefectEditForm, DefectDeleteForm
 from site_app.models import DefectList, RefDoctors
 from flask_login import login_required
-from site_app.models import User, Mkb10, Patients
+from site_app.models import Patients
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
 
 
