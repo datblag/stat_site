@@ -16,7 +16,7 @@ def reports_list():
 @app.route('/reports/smo_expert_defects', methods=['GET'])
 @login_required
 def smo_expert_defects():
-    query = DefectList.query.all()
+    query = DefectList.query.filter_by(is_deleted=0).all()
     file_name = str(uuid.uuid4())+'.xlsx'
     file_full_name = os.path.join(os.getcwd(), 'site_app', 'files', file_name)
     tr = TemplateRender(16, file_name=file_full_name,
@@ -28,6 +28,7 @@ def smo_expert_defects():
                        ['Штраф', 20]])
 
     for defect in query:
+        print(defect)
         tr.add_data_row([[defect.patient.num, defect.patient.fam, defect.patient.im, defect.patient.ot,
                           defect.patient.birthday, defect.doctor.doctor_name, defect.doctor.otdel.otdel_name,
                           defect.disease, defect.period_begin, defect.period_end, defect.error_list,
