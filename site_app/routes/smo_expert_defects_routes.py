@@ -42,6 +42,7 @@ def defect_edit(defectid=0):
         defect_rec.doctor_id_ref = doctor_ref_rec.doctor_id
 
         defect_rec.expert_date = form.expert_date.data
+        defect_rec.expert_name = form.expert_name.data
         defect_rec.error_list = form.defect_codes.data
         defect_rec.error_comment = form.defect_comment.data
 
@@ -72,6 +73,7 @@ def defect_edit(defectid=0):
         form.defect_codes.data = defect_rec.error_list
         form.defect_comment.data = defect_rec.error_comment
         form.expert_date.data = defect_rec.expert_date
+        form.expert_name.data = defect_rec.expert_name
 
         form.disease.data = defect_rec.disease
 

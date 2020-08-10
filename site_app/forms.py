@@ -66,8 +66,10 @@ class DefectEditForm(FlaskForm):
                              validators=[InputRequired(message=u'Введите начало периода')])
     period_end = DateField(id='PeriodEnd',
                            validators=[InputRequired(message=u'Введите конец периода')])
-    expert_date = DateField('Дата экспертизы', id='ExpertDate',
+    expert_date = DateField('Дата экспертизы СМО', id='ExpertDate',
                             validators=[InputRequired(message=u'Введите дату экспертизы')])
+    expert_name = StringField('Эксперт СМО', id='ExpertName',
+                            validators=[InputRequired(message=u'Введите ФИО эксперта')])
     disease = StringField('Код МКБ10', id='disease_code', validators=[InputRequired(message=u'Заполните это поле')])
     sum_service = FloatField('Стоимость услуги', id='sum_service', validators=[InputRequired(),
                                                                                NumberRange(min=0.01,

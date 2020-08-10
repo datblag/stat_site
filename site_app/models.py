@@ -74,7 +74,15 @@ class RefDoctors(db.Model):
         return '<Врач {}>'.format(self.doctor_stat_code+' '+self.doctor_name)
 
 
-class DefectList(db.Model):
+class DatExtDB:
+    def get_list(self, patient_id=None, order=None):
+        query = self.query.filter_by(is_deleted=0).order_by(order)
+        if patient_id is not None:
+            query = query.filter_by(patient_id_ref=patient_id)
+        return query
+
+
+class DefectList(db.Model, DatExtDB):
     __tablename__ = 'defect_list'
     defect_id = db.Column(db.Integer, primary_key=True)
     doctor_id_ref = db.Column(db.Integer, db.ForeignKey('ref_doctors.doctor_id'))
@@ -89,13 +97,14 @@ class DefectList(db.Model):
     sum_penalty = db.Column(db.Numeric(15, 2))
     is_deleted = db.Column(db.Integer)
     expert_date = db.Column(db.Date)
+    expert_name = db.Column(db.String(40))
 
-    def get_list(self, patient_id=None):
-        query = self.query.filter_by(is_deleted=0)
-        if patient_id is not None:
-            query = query.filter_by(patient_id_ref=patient_id)
-        print(patient_id, query)
-        return query.order_by(DefectList.defect_id.desc())
+    # def get_list(self, patient_id=None):
+    #     query = self.query.filter_by(is_deleted=0)
+    #     if patient_id is not None:
+    #         query = query.filter_by(patient_id_ref=patient_id)
+    #     print(patient_id, query)
+    #     return query.order_by(DefectList.defect_id.desc())
 
     def get_sum_total(self):
         return self.sum_service-self.sum_no_pay-self.sum_penalty
