@@ -67,11 +67,25 @@ class RefDoctors(db.Model):
     __tablename__ = 'ref_doctors'
     doctor_id = db.Column(db.Integer, primary_key=True)
     doctor_stat_code = db.Column(db.String(4))
-    doctor_name = db.Column(db.String(500))
+    doctor_name = db.Column(db.String(50))
     defects = db.relationship('DefectList', backref='doctor', lazy='dynamic')
+    # otdel_id_ref = db.Column(db.Integer)
+    otdel_id_ref = db.Column(db.Integer, db.ForeignKey('ref_otdels.otdel_id'))
 
     def __repr__(self):
         return '<Врач {}>'.format(self.doctor_stat_code+' '+self.doctor_name)
+
+
+class RefOtdels(db.Model):
+    __tablename__ = 'ref_otdels'
+    otdel_id = db.Column(db.Integer, primary_key=True)
+    otdel_stat_code = db.Column(db.String(2))
+    otdel_name = db.Column(db.String(50))
+    doctors = db.relationship('RefDoctors', backref='otdel', lazy='dynamic')
+
+    def __repr__(self):
+        return 'Отделение: {}'.format(self.otdel_name)
+
 
 
 class DatExtDB:
