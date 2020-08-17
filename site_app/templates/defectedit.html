@@ -95,6 +95,14 @@
 
     <div class="row">
         <div class="col">
+         {{ form.expert_act_number.label }}
+        {{ form.expert_act_number(type="text", class="form-control")}}
+        {% for error in form.errors.expert_act_number %}
+                <span style="color: red;">[{{error}}]</span>
+        {% endfor %}<br>
+
+        </div>
+        <div class="col">
          {{ form.expert_date.label }}
         {{ form.expert_date(type="date", class="form-control")}}
         {% for error in form.errors.expert_date %}

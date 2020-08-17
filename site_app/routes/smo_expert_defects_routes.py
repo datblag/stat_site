@@ -44,6 +44,7 @@ def defect_edit(defectid=0):
 
         defect_rec.expert_date = form.expert_date.data
         defect_rec.expert_name = form.expert_name.data
+        defect_rec.expert_act_number = form.expert_act_number.data
         defect_rec.error_list = form.defect_codes.data
         defect_rec.error_comment = form.defect_comment.data
 
@@ -61,7 +62,7 @@ def defect_edit(defectid=0):
         logging.warning(form.expert_date.data)
         session['expert_date'] = form.expert_date.data.strftime('%Y-%m-%d')
         session['expert_name'] = form.expert_name.data
-        logging.warning(session['expert_date'])
+        session['expert_act_number'] = form.expert_act_number.data
 
         if 'patient_id' in session:
             return redirect(url_for('patient_open', patient_id=session['patient_id']))
@@ -80,6 +81,7 @@ def defect_edit(defectid=0):
         form.defect_comment.data = defect_rec.error_comment
         form.expert_date.data = defect_rec.expert_date
         form.expert_name.data = defect_rec.expert_name
+        form.expert_act_number.data = defect_rec.expert_act_number
 
         form.disease.data = defect_rec.disease
 
@@ -90,6 +92,8 @@ def defect_edit(defectid=0):
         form.sum_no_pay.data = defect_rec.sum_no_pay
         form.sum_penalty.data = defect_rec.sum_penalty
     else:
+        if 'expert_act_number' in session:
+            form.expert_act_number.data = session['expert_act_number']
         if 'expert_name' in session:
             form.expert_name.data = session['expert_name']
         if 'expert_date' in session:
