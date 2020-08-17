@@ -70,8 +70,9 @@ def patient_open(patient_id=0):
         form.num.data = patient_rec.num
         session['patient_id'] = patient_rec.patient_id
         return render_template('patientopen.html', form=form, patient=patient_rec,
-               defect_list=DefectList().get_list(patient_id=patient_rec.patient_id).all())
+                               defect_list=DefectList().get_list(patient_id=patient_rec.patient_id).all())
     return redirect(url_for('patients_list'))
+
 
 @app.route('/patients/', methods=['GET'])
 @login_required

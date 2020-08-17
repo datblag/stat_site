@@ -112,6 +112,7 @@ class DefectList(db.Model, DatExtDB):
     is_deleted = db.Column(db.Integer)
     expert_date = db.Column(db.Date)
     expert_name = db.Column(db.String(40))
+    expert_act_number = db.Column(db.String(40))
 
     # def get_list(self, patient_id=None):
     #     query = self.query.filter_by(is_deleted=0)

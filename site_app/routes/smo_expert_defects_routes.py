@@ -5,7 +5,8 @@ from site_app.models import DefectList, RefDoctors
 from flask_login import login_required
 from site_app.models import Patients
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
-
+import datetime
+import logging
 
 @app.route('/defect/', methods=['GET'])
 @login_required
@@ -57,6 +58,11 @@ def defect_edit(defectid=0):
 
         db.session.add(defect_rec)
         db.session.commit()
+        logging.warning(form.expert_date.data)
+        session['expert_date'] = form.expert_date.data.strftime('%Y-%m-%d')
+        session['expert_name'] = form.expert_name.data
+        logging.warning(session['expert_date'])
+
         if 'patient_id' in session:
             return redirect(url_for('patient_open', patient_id=session['patient_id']))
         else:
@@ -80,10 +86,15 @@ def defect_edit(defectid=0):
         form.period_start.data = defect_rec.period_begin
         form.period_end.data = defect_rec.period_end
 
-
         form.sum_service.data = defect_rec.sum_service
         form.sum_no_pay.data = defect_rec.sum_no_pay
         form.sum_penalty.data = defect_rec.sum_penalty
+    else:
+        if 'expert_name' in session:
+            form.expert_name.data = session['expert_name']
+        if 'expert_date' in session:
+            logging.warning(session['expert_date'])
+            form.expert_date.data = datetime.datetime.strptime(session['expert_date'], '%Y-%m-%d')
 
     return render_template('defectedit.html', defectid=str(defectid), form=form)
 
