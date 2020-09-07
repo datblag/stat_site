@@ -4,7 +4,7 @@ from site_app.models import Patients, DefectList
 from flask_login import login_required
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
 from site_app.forms import AddPatientForm, PatientForm
-from site_app.mis_db import HltMkab, session_mis
+from site_app.mis_db import HltMkabTable, session_mis
 from site_app import db
 
 
@@ -14,17 +14,17 @@ def patient_add():
     form = AddPatientForm()
     if request.method == 'POST' and form.validate_on_submit():
         if form.num.data:
-            query = session_mis.query(HltMkab)
-            query = query.filter(HltMkab.num.ilike('%' + form.num.data + '%'))
+            query = session_mis.query(HltMkabTable)
+            query = query.filter(HltMkabTable.num.ilike('%' + form.num.data + '%'))
         else:
-            query = session_mis.query(HltMkab)
-            query = query.filter(HltMkab.family.ilike('%'+form.fam.data+'%'))
-            query = query.filter(HltMkab.name.ilike('%'+form.im.data+'%'))
-            query = query.filter(HltMkab.ot.ilike('%'+form.ot.data+'%'))
+            query = session_mis.query(HltMkabTable)
+            query = query.filter(HltMkabTable.family.ilike('%'+form.fam.data+'%'))
+            query = query.filter(HltMkabTable.name.ilike('%'+form.im.data+'%'))
+            query = query.filter(HltMkabTable.ot.ilike('%'+form.ot.data+'%'))
             if form.birthday.data:
-                query = query.filter(HltMkab.date_bd == form.birthday.data)
+                query = query.filter(HltMkabTable.date_bd == form.birthday.data)
 
-        query = query.order_by(HltMkab.family, HltMkab.name, HltMkab.ot)
+        query = query.order_by(HltMkabTable.family, HltMkabTable.name, HltMkabTable.ot)
         return render_template('patientadd.html', form=form, patients=query.limit(100).all())
 
     return render_template('patientadd.html', form=form)
@@ -34,8 +34,8 @@ def patient_add():
 @login_required
 def patient_save_from_mis(mkabid=0):
     if mkabid:
-        query = session_mis.query(HltMkab)
-        query = query.filter(HltMkab.mkabid==mkabid)
+        query = session_mis.query(HltMkabTable)
+        query = query.filter(HltMkabTable.mkabid == mkabid)
         query = query.limit(1).all()
         if query:
             query_patients = Patients.query.filter(Patients.mis_id == query[0].mkabid).all()

@@ -14,7 +14,8 @@ metadata_mis = MetaData()
 session_mis = Session(bind=engine_mis)
 
 
-class HltMkab(BaseMis):
+# карта пациента
+class HltMkabTable(BaseMis):
     __tablename__ = 'hlt_mkab'
     mkabid = Column(INT, primary_key=True)
     family = Column(VARCHAR(40))
@@ -25,5 +26,14 @@ class HltMkab(BaseMis):
 
     def __repr__(self):
         return '<{} {} {} {}>'.format(self.family, self.name, self.ot, self.date_bd)
+
+
+# отделения
+class OmsDepartmentTable(BaseMis):
+    __tablename__ = 'oms_department'
+    departmentid = Column(INT, primary_key=True)
+    departmentname = Column(VARCHAR(255))
+    rf_lpuid = Column(INT)
+    rf_kl_departmenttypeid = Column(INT)
 
 
