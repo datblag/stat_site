@@ -45,7 +45,8 @@ class Mkb10(db.Model):
 
 class Permission:
     EXPERT = 1
-    REPORT = 10
+    REPORT = 2
+    ADMIN = 4
 
 
 class Role(db.model):
@@ -63,6 +64,7 @@ class Role(db.model):
     def has_permission(self, perm):
         return self.permissions & perm == perm
 
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_login = db.Column(db.String(64), index=True, unique=True)
@@ -75,12 +77,17 @@ class User(UserMixin, db.Model):
     def set_login(self, login):
         self.user_login = login.lower()
 
-
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def can(self, perm):
+        return self.role is not None and self.role.has_permission(perm)
+
+    def is_administrator(self):
+        return self.can(Permission.ADMIN)
 
 
 class RefDoctors(db.Model):
