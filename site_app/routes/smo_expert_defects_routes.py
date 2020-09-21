@@ -29,7 +29,7 @@ def defect_list():
 
 @app.route('/defect/<int:defectid>', methods=['GET', 'POST'])
 @login_required
-@permission_required(Permission.MODERATE)
+@permission_required(Permission.EXPERT)
 def defect_edit(defectid=0):
     form = DefectEditForm(request.form)
     if defectid == 0:

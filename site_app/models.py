@@ -68,6 +68,7 @@ class User(UserMixin, db.Model):
     user_login = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     user_name = db.Column(db.String(50))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     def __repr__(self):
         return '<Пользовательu {}>'.format(self.user_name)
