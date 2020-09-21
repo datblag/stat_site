@@ -25,8 +25,6 @@ class Patients(db.Model):
         return '{} {} {} {}'.format(self.fam, self.im, self.ot, datetime.datetime.strftime(self.birthday, '%d.%m.%Y'))
 
 
-
-
 class Mkb10(db.Model):
     __tablename__ = 'mkb10'
     rec_code = db.Column(db.String(9))
@@ -49,7 +47,7 @@ class Permission:
     ADMIN = 4
 
 
-class Role(db.model):
+class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(6), unique=True)

@@ -1,12 +1,15 @@
 from site_app import app, db
 from flask import render_template, request, redirect, url_for, session
 from site_app.forms import DefectEditForm, DefectDeleteForm
-from site_app.models import DefectList, RefDoctors
+from site_app.models import DefectList, RefDoctors, Permission
 from flask_login import login_required
 from site_app.models import Patients
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
 import datetime
 import logging
+from site_app.decorators import admin_required, permission_required
+
+
 
 @app.route('/defect/', methods=['GET'])
 @login_required
@@ -26,6 +29,7 @@ def defect_list():
 
 @app.route('/defect/<int:defectid>', methods=['GET', 'POST'])
 @login_required
+@permission_required(Permission.MODERATE)
 def defect_edit(defectid=0):
     form = DefectEditForm(request.form)
     if defectid == 0:
