@@ -43,6 +43,26 @@ class Mkb10(db.Model):
         return '<{}{}>'.format(self.code, self.name)
 
 
+class Permission:
+    EXPERT = 1
+    REPORT = 10
+
+
+class Role(db.model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(6), unique=True)
+    permissions = db.Column(db.Integer)
+    users = db.relationship('User', backref='role', lazy='dynamic')
+
+    def __init__(self, **kwargs):
+        super(Role, self).__init__(**kwargs)
+        if self.permissions is None:
+            self.permissions = 0
+
+    def has_permission(self, perm):
+        return self.permissions & perm == perm
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_login = db.Column(db.String(64), index=True, unique=True)
