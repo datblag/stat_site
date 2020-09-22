@@ -109,6 +109,7 @@ def defect_edit(defectid=0):
 
 @app.route('/defect_delete/<int:defectid>', methods=['GET', 'POST'])
 @login_required
+@permission_required(Permission.EXPERT)
 def defect_delete(defectid=0):
     form = DefectDeleteForm(request.form)
     if defectid == 0 or defectid is None:

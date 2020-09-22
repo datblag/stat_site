@@ -50,7 +50,7 @@ class Permission:
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(6), unique=True)
+    name = db.Column(db.String(50), unique=True)
     permissions = db.Column(db.Integer)
     users = db.relationship('User', backref='role', lazy='dynamic')
 
@@ -88,12 +88,14 @@ class User(UserMixin, db.Model):
     def is_administrator(self):
         return self.can(Permission.ADMIN)
 
+    def __repr__(self):
+        return '<Пользователь {}>'.format(str(self.id)+' '+self.user_login)
 
 class RefDoctors(db.Model):
     __tablename__ = 'ref_doctors'
     doctor_id = db.Column(db.Integer, primary_key=True)
     doctor_stat_code = db.Column(db.String(4))
-    doctor_name = db.Column(db.String(50))
+    doctor_name = db.Column(db.String(35))
     defects = db.relationship('DefectList', backref='doctor', lazy='dynamic')
     # otdel_id_ref = db.Column(db.Integer)
     otdel_id_ref = db.Column(db.Integer, db.ForeignKey('ref_otdels.otdel_id'))

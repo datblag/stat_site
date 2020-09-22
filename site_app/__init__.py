@@ -12,7 +12,7 @@ app.config['CSRF_ENABLED'] = True
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = site_config.SQLALCHEMY_DATABASE_URI
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, compare_type=True)
 
 login = LoginManager(app)
 login.login_view = 'login'
