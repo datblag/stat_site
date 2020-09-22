@@ -24,6 +24,9 @@
       <li class="nav-item active">
 
       </li>
+        <li class="nav-item">
+        <a class="nav-link" href="{{url_for('patients_list')}}">Пациенты</a>
+      </li>
     </ul>
     {% if current_user.is_anonymous %}
     {% else %}
