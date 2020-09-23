@@ -3,6 +3,8 @@ from flask_wtf import FlaskForm
 from wtforms.widgets import TextArea
 from wtforms.validators import Length, NumberRange, InputRequired, DataRequired, ValidationError, Optional
 from site_app.models import RefDoctors
+import requests
+from bs4 import BeautifulSoup
 
 
 class SearchDoctorForm(FlaskForm):
@@ -42,6 +44,7 @@ class AddPatientForm(FlaskForm):
             if not im.data or im.data is None:
                 raise ValidationError('Ошибка! Введите фамилию и имя, или номер карты')
 
+
 class PatientForm(FlaskForm):
     fam = StringField('Фамилия', validators=[InputRequired(message=u'Заполните это поле')])
     im = StringField('Имя', validators=[InputRequired(message=u'Заполните это поле')])
@@ -52,6 +55,48 @@ class PatientForm(FlaskForm):
 
 class PolisForm(FlaskForm):
     enp = StringField('ЕНП', validators=[InputRequired(message=u'Заполните это поле')])
+
+    @staticmethod
+    def validate_enp(self, enp):
+        URL = "http://aofoms.ru/index.php?c=availPolicy"
+
+        with requests.Session() as s:
+            s.headers = {"User-Agent": "Mozilla/5.0"}
+            res = s.get(URL)
+            soup = BeautifulSoup(res.text, "lxml")
+            # payload = {item['name']: item.get('value', '') for item in soup.select("input[name]")}
+            # # print(payload)
+            # # payload['__EVENTTARGET'] = 'polisYesEnp'
+            # payload['polis'] = 'enp'
+            # payload['npolEnp'] = enp.data.strip()
+            #     # '2847040848000286'
+            # payload['spol'] = ''
+            # payload['npol'] = ''
+            # payload['npolVrem'] = ''
+            # payload['npolBlank'] = ''
+            # payload['polisYesEnp'] = 'Найти'
+
+            data = {'polis': 'enp', 'npolEnp': enp.data.strip(), 'spol': '', 'npol': '', 'npolVrem': '',
+                    'npolBlank': '', 'polisYesEnp': 'Найти'}
+
+            req = s.post(URL, data=data, headers={"User-Agent": "Mozilla/5.0"})
+            soup_obj = BeautifulSoup(req.text, "lxml")
+            # print(soup_obj.text)
+            res = []
+            for items in soup_obj.select("div.content_in > h2"):
+                res.append(items.get_text())
+
+            if not 'не найден среди действующих' in ' '.join(res):
+
+                data = {'dispance': 'DisEnp', 'disEnp': enp.data.strip(), 'disSpol': '', 'disNpol': '', 'disNpolVrem': '',
+                        'disNpolBlank': '', 'DisYesEnp': 'Найти'}
+
+                req = s.post(URL, data=data, headers={"User-Agent": "Mozilla/5.0"})
+                soup_obj = BeautifulSoup(req.text, "lxml")
+                for items in soup_obj.select("div.content_in > h2"):
+                    res.append(items.get_text())
+
+            raise ValidationError(' '.join(res))
 
 
 class DefectDeleteForm(FlaskForm):

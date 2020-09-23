@@ -4,8 +4,6 @@ from site_app.forms import LoginForm, PolisForm
 from flask_login import current_user, login_user, login_required, logout_user
 from site_app.models import User
 from werkzeug.urls import url_parse
-import requests
-from bs4 import BeautifulSoup
 
 
 @app.template_filter('formatdate')
@@ -40,7 +38,7 @@ def login():
 
 
 @app.route('/', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def index():
     form = PolisForm()
     if form.validate_on_submit():
@@ -49,11 +47,11 @@ def index():
 
 
 @app.errorhandler(403)
-def page_not_found(e):
+def page_not_found_403(e):
     return 'Нет доступа'
 
 
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found_404(e):
     return 'Страница не найдена'
 

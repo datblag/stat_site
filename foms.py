@@ -28,7 +28,3 @@ with requests.Session() as s:
     for items in soup_obj.select("div.content_in > h2"):
         res.append(items.get_text())
     print(res)
-        # for i in items.parent.contents:
-        #     print(i.string.strip())
-    #     data = [item.get_text(strip=True) for item in items.select("div")]
-    #     print(data)
