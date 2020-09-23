@@ -1,6 +1,6 @@
 from site_app import app
 from flask import render_template, request, redirect, url_for, flash
-from site_app.forms import LoginForm
+from site_app.forms import LoginForm, PolisForm
 from flask_login import current_user, login_user, login_required, logout_user
 from site_app.models import User
 from werkzeug.urls import url_parse
@@ -37,10 +37,13 @@ def login():
     return render_template('login.html', title='Sign In', form=form)
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
-    return render_template('index.html')
+    form = PolisForm()
+    if form.validate_on_submit():
+        pass
+    return render_template('index.html', form=form)
 
 
 @app.errorhandler(403)

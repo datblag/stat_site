@@ -50,6 +50,10 @@ class PatientForm(FlaskForm):
     num = StringField('N карты', validators=[Optional()])
 
 
+class PolisForm(FlaskForm):
+    enp = StringField('ЕНП', validators=[InputRequired(message=u'Заполните это поле')])
+
+
 class DefectDeleteForm(FlaskForm):
     pass
 

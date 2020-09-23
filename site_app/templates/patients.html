@@ -3,7 +3,7 @@
         {% block title %}
             Список пациентов
         {% endblock title %}
-
+{%block nav_patients%}active{%endblock nav_patients%}
 {% block body %}
     <div class="alert alert-dark" role="alert">
         <a href="{{url_for('patient_add')}}" class="alert-link">Добавить пациента</a>
