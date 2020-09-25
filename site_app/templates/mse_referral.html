@@ -1,0 +1,46 @@
+{% extends "base.html"%}
+{% import "_pagination.html" as macros %}
+        {% block title %}
+            Направления на МСЭ
+        {% endblock title %}
+
+{% block body %}
+{% endblock body %}
+
+{% block nav_documents %}active{% endblock nav_documents %}
+
+{% block row %}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Врач</th>
+      <th scope="col">Пациент</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for defect in defects%}
+
+    <tr>
+      <td><a href="{{url_for('defect_edit', defectid=defect.defect_id)}}">Изменить</a></td>
+      <td>{{referrals.doctor.doctor_name}}</a></td>
+      <td>{{referrals.patient}}</td>
+      <td><a href="{{url_for('defect_delete', defectid=defect.defect_id)}}">Удалить</a></td>
+    </tr>
+    {% endfor%}
+
+
+  </tbody>
+</table>
+
+
+
+{% endblock row %}
+
+{% block body2 %}
+<div class="pagination">
+{{ macros.pagination_widget(pagination, '.mse_referral_list') }}
+</div>
+{% endblock %}

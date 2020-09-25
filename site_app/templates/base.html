@@ -33,7 +33,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{{url_for('defect_list')}}">Дефекты экспертизы СМО</a>
-          <a class="dropdown-item" href="#">Направление на МСЭ</a>
+          <a class="dropdown-item" href="{{url_for('mse_referral_list')}}">Направление на МСЭ</a>
         </div>
       </li>
 
@@ -46,7 +46,21 @@
         </div>
       </li>
 
+    <li class="nav-item dropdown {% block nav_refs %}{% endblock nav_refs %}">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarRefs" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Справочники
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{url_for('doctor_list')}}">Врачи</a>
+          <a class="dropdown-item" href="{{url_for('mkb10_list')}}">Диагнозы</a>
+        </div>
+      </li>
+
+
     </ul>
+
+
+
 
 
 

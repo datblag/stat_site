@@ -29,7 +29,8 @@
         </div>
     </div>
  </div>
-        <a href="{{url_for('defect_edit', defectid=0)}}" class="btn btn-primary" >Создать дефект</a>
+        <a href="{{url_for('defect_edit', defectid=0)}}" class="btn btn-primary" >Дефект СМО</a>
+        <a href="{{url_for('mse_referral_edit', mse_id=0)}}" class="btn btn-primary" >Направление на МСЭ</a>
         <a href="{{url_for('patients_list')}}" class="btn btn-secondary" >Закрыть</a>
 </form>
 
@@ -40,6 +41,11 @@
 
 {% block row %}
 <br/><br/>
+
+<div class="row">
+
+<div class="col">
+
 <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -68,7 +74,35 @@
   </tbody>
 </table>
 
+</div>
 
+<div class="col">
+
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Врач</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for mse in mse_referral%}
+    <tr>
+      <td><a href="{{url_for('defect_edit', mseid=mse.mse_id)}}">Изменить</a></td>
+      <td>{{defect.doctor.doctor_name}}</a></td>
+      <td><a href="{{url_for('defect_delete', mseid=mse.mse_id)}}">Удалить</a></td>
+    </tr>
+    {% endfor%}
+
+
+  </tbody>
+</table>
+
+</div>
+</div>
 
 {% endblock row %}
 

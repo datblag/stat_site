@@ -4,6 +4,9 @@
             Список врачей
         {% endblock title %}
 
+{% block nav_refs %}active{% endblock nav_refs %}
+
+
 {% block body %}
  <form style="inline" method="post" name="search">
     {{form.hidden_tag()}}

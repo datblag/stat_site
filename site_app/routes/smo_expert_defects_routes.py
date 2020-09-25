@@ -14,17 +14,23 @@ from site_app.decorators import admin_required, permission_required
 @app.route('/defect/', methods=['GET'])
 @login_required
 def defect_list():
+    if 'patient_id' in session:
+        session.pop('patient_id', None)
     page = request.args.get('page', 1, type=int)
     pagination = DefectList.get_list(DefectList).paginate(
         page, per_page=FLASKY_POSTS_PER_PAGE,
         error_out=False)
-    # pagination = DefectList.query.filter(DefectList.is_deleted != 1).paginate(
-    #     page, per_page=FLASKY_POSTS_PER_PAGE,
-    #     error_out=False)
-
-    # defects = db.session.query(DefectList).filter(DefectList.is_deleted != 1).all()
     defects = pagination.items
     return render_template('defect.html', pagination=pagination, defects=defects)
+
+
+@login_required
+@app.route('/defect_close/')
+def defect_close():
+    if 'patient_id' in session:
+        return redirect(url_for('patient_open', patient_id=session['patient_id']))
+    else:
+        return redirect(url_for('defect_list'))
 
 
 @app.route('/defect/<int:defectid>', methods=['GET', 'POST'])
@@ -73,7 +79,7 @@ def defect_edit(defectid=0):
         else:
             return redirect(url_for('defect_list'))
 
-    if defectid != 0:
+    if defectid != 0 and defectid is not None:
         if defect_rec.doctor_id_ref:
             doctor_ref_rec = RefDoctors.query.get(defect_rec.doctor_id_ref)
             if doctor_ref_rec:

@@ -28,7 +28,6 @@ def mkb10_list(code=None):
 
 @app.route('/doctor/', methods=['GET', 'POST'])
 @app.route('/doctor/<doctorid>', methods=['GET', 'POST'])
-@login_required
 def doctor_list(doctorid=None):
     if doctorid:
         if 'query' in session:

@@ -1,6 +1,6 @@
 from site_app import app
 from flask import render_template, request, redirect, url_for, session
-from site_app.models.main_tables import Patients, DefectList
+from site_app.models.main_tables import Patients, DefectList, MseReferral
 from flask_login import login_required
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
 from site_app.forms import AddPatientForm, PatientForm
@@ -70,7 +70,8 @@ def patient_open(patient_id=0):
         form.num.data = patient_rec.num
         session['patient_id'] = patient_rec.patient_id
         return render_template('patientopen.html', form=form, patient=patient_rec,
-                               defect_list=DefectList().get_list(patient_id=patient_rec.patient_id).all())
+                               defect_list=DefectList.get_list(DefectList, patient_id=patient_rec.patient_id).all(),
+                               mse_referral=MseReferral.get_list(MseReferral, patient_id=patient_rec.patient_id).all())
     return redirect(url_for('patients_list'))
 
 
