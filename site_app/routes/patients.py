@@ -1,6 +1,6 @@
 from site_app import app
 from flask import render_template, request, redirect, url_for, session
-from site_app.models import Patients, DefectList
+from site_app.models.main_tables import Patients, DefectList
 from flask_login import login_required
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
 from site_app.forms import AddPatientForm, PatientForm

@@ -2,7 +2,7 @@ from site_app import app
 from flask import render_template, request, redirect, url_for, flash
 from site_app.forms import LoginForm, PolisForm
 from flask_login import current_user, login_user, login_required, logout_user
-from site_app.models import User
+from site_app.models.authorization import User
 from werkzeug.urls import url_parse
 
 

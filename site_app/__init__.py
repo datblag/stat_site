@@ -20,7 +20,7 @@ login.login_view = 'login'
 from site_app import models
 from site_app.routes import main_routes, autocomplete, patients, smo_expert_defects_routes, reference_routes
 from site_app.routes.reports import main_reports_routes
-from site_app.models import DefectList
+from site_app.models.main_tables import DefectList
 
 
 

@@ -2,7 +2,7 @@ from site_app import app
 from flask_login import login_required
 from flask import render_template, send_file
 from site_app.template_render import TemplateRender
-from site_app.models import DefectList
+from site_app.models.main_tables import DefectList
 import os
 import uuid
 import logging

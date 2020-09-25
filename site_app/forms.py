@@ -2,7 +2,7 @@ from wtforms.fields import StringField, SubmitField, DateField, FloatField, Pass
 from flask_wtf import FlaskForm
 from wtforms.widgets import TextArea
 from wtforms.validators import Length, NumberRange, InputRequired, DataRequired, ValidationError, Optional
-from site_app.models import RefDoctors
+from site_app.models.reference import RefDoctors
 import requests
 from bs4 import BeautifulSoup
 

@@ -1,9 +1,8 @@
 from site_app import app
 from flask import render_template, request, redirect, url_for, session
 from site_app.forms import SearchDoctorForm
-from site_app.models import RefDoctors
+from site_app.models.reference import RefDoctors, Mkb10
 from flask_login import login_required
-from site_app.models import Mkb10
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
 
 

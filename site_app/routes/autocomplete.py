@@ -1,5 +1,5 @@
 from site_app import db, app
-from site_app.models import RefDoctors, RefDefectTypes
+from site_app.models.reference import RefDoctors, RefDefectTypes
 from flask import Response
 import json
 
