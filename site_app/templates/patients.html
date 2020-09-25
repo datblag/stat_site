@@ -20,6 +20,7 @@
       <th scope="col">Имя</th>
       <th scope="col">Отчество</th>
       <th scope="col">Дата рождения</th>
+      <th scope="col">Возраст</th>
     </tr>
   </thead>
   <tbody>
@@ -33,6 +34,7 @@
       <td>{{patient.im}}</td>
       <td>{{patient.ot}}</td>
       <td>{{patient.birthday|formatdate}}</td>
+      <td>{{patient.get_age()}}</td>
     </tr>
     {% endfor%}
 

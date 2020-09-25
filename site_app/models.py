@@ -21,6 +21,10 @@ class Patients(db.Model):
     is_deleted = db.Column(db.Integer)
     defects_smo_expert = db.relationship('DefectList', backref='patient', lazy='dynamic')
 
+    def get_age(self):
+        today = datetime.date.today()
+        return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
+
     def __repr__(self):
         return '{} {} {} {}'.format(self.fam, self.im, self.ot, datetime.datetime.strftime(self.birthday, '%d.%m.%Y'))
 
