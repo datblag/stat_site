@@ -3,7 +3,7 @@ from flask import render_template, request, redirect, url_for, session
 from site_app.forms import DefectEditForm, DefectDeleteForm
 from site_app.models import DefectList, RefDoctors, Permission
 from flask_login import login_required
-from site_app.models import Patients
+from site_app.models import Patients, DatExtDB
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
 import datetime
 import logging
@@ -116,6 +116,7 @@ def defect_delete(defectid=0):
         return redirect(url_for('defect_list'))
     if request.method == 'POST' and form.validate_on_submit():
         d = DefectList.query.filter_by(defect_id=defectid).first()
+        logging.warning(['delete defect', defectid])
         d.is_deleted = 1
         db.session.add(d)
         db.session.commit()

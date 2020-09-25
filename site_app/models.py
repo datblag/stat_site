@@ -9,7 +9,15 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-class Patients(db.Model):
+class DatExtDB:
+    def get_list(self, patient_id=None, order=None):
+        query = self.query.filter(self.is_deleted !=1 ).order_by(order)
+        if patient_id is not None:
+            query = query.filter_by(patient_id_ref=patient_id)
+        return query
+
+
+class Patients(db.Model, DatExtDB):
     __tablename__ = 'patients'
     patient_id = db.Column(db.Integer, primary_key=True)
     fam = db.Column(db.String(40))
@@ -117,15 +125,6 @@ class RefOtdels(db.Model):
 
     def __repr__(self):
         return 'Отделение: {}'.format(self.otdel_name)
-
-
-
-class DatExtDB:
-    def get_list(self, patient_id=None, order=None):
-        query = self.query.filter_by(is_deleted=0).order_by(order)
-        if patient_id is not None:
-            query = query.filter_by(patient_id_ref=patient_id)
-        return query
 
 
 class DefectList(db.Model, DatExtDB):

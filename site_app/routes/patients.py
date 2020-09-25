@@ -80,7 +80,8 @@ def patients_list():
     if 'patient_id' in session:
         session.pop('patient_id', None)
     page = request.args.get('page', 1, type=int)
-    pagination = Patients.query.filter(Patients.is_deleted != 1).\
+    # Patients.query.filter(Patients.is_deleted != 1)
+    pagination = Patients.get_list(Patients).\
         order_by(Patients.fam, Patients.im, Patients.ot).paginate(page, per_page=FLASKY_POSTS_PER_PAGE, error_out=False)
 
     patients = pagination.items
