@@ -4,7 +4,7 @@ from site_app.models import Patients, DefectList
 from flask_login import login_required
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
 from site_app.forms import AddPatientForm, PatientForm
-from site_app.mis_db import HltMkabTable, session_mis
+from site_app.models.mis_db import HltMkabTable, session_mis
 from site_app import db
 
 

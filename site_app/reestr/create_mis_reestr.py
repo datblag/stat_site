@@ -1,4 +1,4 @@
-from site_app.mis_db import *
+from site_app.models.mis_db import *
 import logging
 
 

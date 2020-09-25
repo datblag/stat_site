@@ -9,50 +9,6 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-class DatExtDB:
-    def get_list(self, patient_id=None, order=None):
-        query = self.query.filter(self.is_deleted !=1 ).order_by(order)
-        if patient_id is not None:
-            query = query.filter_by(patient_id_ref=patient_id)
-        return query
-
-
-class Patients(db.Model, DatExtDB):
-    __tablename__ = 'patients'
-    patient_id = db.Column(db.Integer, primary_key=True)
-    fam = db.Column(db.String(40))
-    im = db.Column(db.String(40))
-    ot = db.Column(db.String(40))
-    birthday = db.Column(db.Date)
-    num = db.Column(db.String(40))
-    mis_id = db.Column(db.Integer)
-    is_deleted = db.Column(db.Integer)
-    defects_smo_expert = db.relationship('DefectList', backref='patient', lazy='dynamic')
-
-    def get_age(self):
-        today = datetime.date.today()
-        return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
-
-    def __repr__(self):
-        return '{} {} {} {}'.format(self.fam, self.im, self.ot, datetime.datetime.strftime(self.birthday, '%d.%m.%Y'))
-
-
-class Mkb10(db.Model):
-    __tablename__ = 'mkb10'
-    rec_code = db.Column(db.String(9))
-    id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(6))
-    name = db.Column(db.Text, nullable=False)
-    parent_code = db.Column(db.Integer, db.ForeignKey('mkb10.id'), index=True)
-    parent = db.relationship(lambda: Mkb10, remote_side=id, backref='sub_mkb10')
-    addl_code = db.Column(db.Integer)
-    actual = db.Column(db.Boolean)
-    date = db.Column(db.Date)
-
-    def __repr__(self):
-        return '<{}{}>'.format(self.code, self.name)
-
-
 class Permission:
     EXPERT = 1
     REPORT = 2
@@ -103,7 +59,55 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<Пользователь {}>'.format(str(self.id)+' '+self.user_login)
 
+
+class DatExtDB:
+    def get_list(self, patient_id=None, order=None):
+        query = self.query.filter(self.is_deleted !=1 ).order_by(order)
+        if patient_id is not None:
+            query = query.filter_by(patient_id_ref=patient_id)
+        return query
+
+
+class Patients(db.Model, DatExtDB):
+    # пациенты
+    __tablename__ = 'patients'
+    patient_id = db.Column(db.Integer, primary_key=True)
+    fam = db.Column(db.String(40))
+    im = db.Column(db.String(40))
+    ot = db.Column(db.String(40))
+    birthday = db.Column(db.Date)
+    num = db.Column(db.String(40))
+    mis_id = db.Column(db.Integer)
+    is_deleted = db.Column(db.Integer)
+    defects_smo_expert = db.relationship('DefectList', backref='patient', lazy='dynamic')
+
+    def get_age(self):
+        today = datetime.date.today()
+        return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
+
+    def __repr__(self):
+        return '{} {} {} {}'.format(self.fam, self.im, self.ot, datetime.datetime.strftime(self.birthday, '%d.%m.%Y'))
+
+
+class Mkb10(db.Model):
+    # диагнозы
+    __tablename__ = 'mkb10'
+    rec_code = db.Column(db.String(9))
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(6))
+    name = db.Column(db.Text, nullable=False)
+    parent_code = db.Column(db.Integer, db.ForeignKey('mkb10.id'), index=True)
+    parent = db.relationship(lambda: Mkb10, remote_side=id, backref='sub_mkb10')
+    addl_code = db.Column(db.Integer)
+    actual = db.Column(db.Boolean)
+    date = db.Column(db.Date)
+
+    def __repr__(self):
+        return '<{}{}>'.format(self.code, self.name)
+
+
 class RefDoctors(db.Model):
+    # врачи
     __tablename__ = 'ref_doctors'
     doctor_id = db.Column(db.Integer, primary_key=True)
     doctor_stat_code = db.Column(db.String(4))
@@ -117,6 +121,7 @@ class RefDoctors(db.Model):
 
 
 class RefOtdels(db.Model):
+    # отделения
     __tablename__ = 'ref_otdels'
     otdel_id = db.Column(db.Integer, primary_key=True)
     otdel_stat_code = db.Column(db.String(2))
@@ -128,6 +133,7 @@ class RefOtdels(db.Model):
 
 
 class DefectList(db.Model, DatExtDB):
+    # дефекты экспертизы страховой компании
     __tablename__ = 'defect_list'
     defect_id = db.Column(db.Integer, primary_key=True)
     doctor_id_ref = db.Column(db.Integer, db.ForeignKey('ref_doctors.doctor_id'))
