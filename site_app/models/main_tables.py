@@ -22,6 +22,7 @@ class Patients(db.Model, DatExtDB):
     mis_id = db.Column(db.Integer)
     is_deleted = db.Column(db.Integer)
     defects_smo_expert = db.relationship('DefectList', backref='patient', lazy='dynamic')
+    mse_referral = db.relationship('MseReferral', backref='patient', lazy='dynamic')
 
     def get_age(self):
         today = datetime.date.today()
@@ -29,6 +30,15 @@ class Patients(db.Model, DatExtDB):
 
     def __repr__(self):
         return '{} {} {} {}'.format(self.fam, self.im, self.ot, datetime.datetime.strftime(self.birthday, '%d.%m.%Y'))
+
+
+class MseReferral(db.Model, DatExtDB):
+    # направление на МСЭ
+    __tablename__ = 'mse_referral'
+    mse_id = db.Column(db.Integer, primary_key=True)
+    doctor_id_ref = db.Column(db.Integer, db.ForeignKey('ref_doctors.doctor_id'))
+    patient_id_ref = db.Column(db.Integer, db.ForeignKey('patients.patient_id'))
+    # mse_id_ref = db.Column(db.Integer, db.ForeignKey('patients.patient_id'))
 
 
 class DefectList(db.Model, DatExtDB):
