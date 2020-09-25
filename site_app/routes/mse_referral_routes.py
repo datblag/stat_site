@@ -1,7 +1,7 @@
 from site_app import app, db
 from flask import render_template, request, redirect, url_for, session
-from site_app.forms import DefectEditForm, DefectDeleteForm
-from site_app.models.main_tables import Patients, MseReferral
+from site_app.forms import MseReferralEditForm, DefectDeleteForm
+from site_app.models.main_tables import MseReferral, Patients
 from flask_login import login_required
 from site_app.models.reference import RefDoctors
 from site_app.models.authorization import Permission
@@ -15,21 +15,20 @@ from site_app.decorators import admin_required, permission_required
 @login_required
 @permission_required(Permission.EXPERT)
 def mse_referral_edit(mse_id=0):
-    return ''
-    # form = DefectEditForm(request.form)
-    # if defectid == 0:
-    #     pass
-    # else:
-    #     defect_rec = DefectList.query.get_or_404(defectid)
+    form = MseReferralEditForm(request.form)
+    if mse_id == 0:
+        pass
+    else:
+        mse_rec = MseReferral.query.get_or_404(mse_id)
     # # print(form.validate_on_submit(), request.method, request)
-    # if request.method == 'POST' and form.validate_on_submit():
-    #     if defectid == 0:
-    #         defect_rec = DefectList()
-    #         defect_rec.is_deleted = 0
-    #         defect_rec.patient = Patients.query.get(session['patient_id'])
-    #
-    #     doctor_ref_rec = RefDoctors.query.filter_by(doctor_stat_code=form.doctor_code.data.strip()).first()
-    #     defect_rec.doctor_id_ref = doctor_ref_rec.doctor_id
+    if request.method == 'POST' and form.validate_on_submit():
+        if mse_id == 0:
+            mse_rec = MseReferral()
+            mse_rec.is_deleted = 0
+            mse_rec.patient = Patients.query.get(session['patient_id'])
+
+        doctor_ref_rec = RefDoctors.query.filter_by(doctor_stat_code=form.doctor_code.data.strip()).first()
+        mse_rec.doctor_id_ref = doctor_ref_rec.doctor_id
     #
     #     defect_rec.expert_date = form.expert_date.data
     #     defect_rec.expert_name = form.expert_name.data
@@ -46,17 +45,16 @@ def mse_referral_edit(mse_id=0):
     #     defect_rec.sum_no_pay = form.sum_no_pay.data
     #     defect_rec.sum_penalty = form.sum_penalty.data
     #
-    #     db.session.add(defect_rec)
-    #     db.session.commit()
-    #     logging.warning(form.expert_date.data)
+        db.session.add(mse_rec)
+        db.session.commit()
     #     session['expert_date'] = form.expert_date.data.strftime('%Y-%m-%d')
     #     session['expert_name'] = form.expert_name.data
     #     session['expert_act_number'] = form.expert_act_number.data
     #
-    #     if 'patient_id' in session:
-    #         return redirect(url_for('patient_open', patient_id=session['patient_id']))
-    #     else:
-    #         return redirect(url_for('defect_list'))
+        if 'patient_id' in session:
+            return redirect(url_for('patient_open', patient_id=session['patient_id']))
+        else:
+            return redirect(url_for('mse_referral_list'))
     #
     # if defectid != 0 and defectid is not None:
     #     if defect_rec.doctor_id_ref:
@@ -89,7 +87,7 @@ def mse_referral_edit(mse_id=0):
     #         logging.warning(session['expert_date'])
     #         form.expert_date.data = datetime.datetime.strptime(session['expert_date'], '%Y-%m-%d')
     #
-    # return render_template('defectedit.html', defectid=str(defectid), form=form)
+    return render_template('mse_referral_edit.html', mse_id=str(mse_id), form=form)
 
 
 
@@ -104,3 +102,13 @@ def mse_referral_list():
         error_out=False)
     referrals = pagination.items
     return render_template('mse_referral.html', pagination=pagination, referrals=referrals)
+
+
+@app.route('/mse_ref_close/')
+@login_required
+def mse_referral_close():
+    if 'patient_id' in session:
+        return redirect(url_for('patient_open', patient_id=session['patient_id']))
+    else:
+        return redirect(url_for('mse_referral_list'))
+

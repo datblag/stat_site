@@ -91,9 +91,9 @@
 
     {% for mse in mse_referral%}
     <tr>
-      <td><a href="{{url_for('defect_edit', mseid=mse.mse_id)}}">Изменить</a></td>
-      <td>{{defect.doctor.doctor_name}}</a></td>
-      <td><a href="{{url_for('defect_delete', mseid=mse.mse_id)}}">Удалить</a></td>
+      <td><a href="{{url_for('mse_referral_edit', mse_id=mse.mse_id)}}">Изменить</a></td>
+      <td>{{mse.doctor.doctor_name}}</a></td>
+      <td><a href="{{url_for('mse_referral_edit', mse_id=mse.mse_id)}}">Удалить</a></td>
     </tr>
     {% endfor%}
 

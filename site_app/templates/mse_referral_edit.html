@@ -1,0 +1,42 @@
+{% extends "base.html"%}
+        {% block title %}
+            Направление на МСЭ - редактирование
+        {% endblock title %}
+
+{% block body %}
+<form method="post" novalidate>
+
+    {{form.hidden_tag()}}
+
+    <div class="row">
+        <div class="col">
+            {{ form.doctor_code.label }}
+            {{ form.doctor_code(type="text", class="form-control")}}
+            {% for error in form.errors.doctor_code %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+      </div>
+    </div>
+<button type="submit" class="btn btn-primary">Сохранить</button>
+<a href="{{url_for('mse_referral_close')}}" class="btn btn-secondary" >Отмена</a>
+</form>
+
+<script>
+$(function() {
+        $.ajax({
+            url: '{{ url_for("autocomplete_doctors") }}'
+            }).done(function (data){
+                $('#DoctorInput').autocomplete({
+                    source: data,
+                    minLength: 2
+                });
+            });
+        });
+
+
+
+</script>
+
+
+
+{% endblock body %}
