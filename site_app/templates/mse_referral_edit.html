@@ -17,7 +17,19 @@
             {% endfor %}<br>
       </div>
     </div>
-<button type="submit" class="btn btn-primary">Сохранить</button>
+
+    <div class="row">
+        <div class="col">
+            {{ form.mse_disease.label }}
+            {{ form.mse_disease(type="text", class="form-control")}}
+            {% for error in form.errors.mse_disease %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+        </div>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Сохранить</button>
 <a href="{{url_for('mse_referral_close')}}" class="btn btn-secondary" >Отмена</a>
 </form>
 
@@ -33,6 +45,29 @@ $(function() {
             });
         });
 
+var mapKey = {
+  'Й' : 'Q',  'Ц': 'W', 'У': 'E', 'Q': 'Q', 'К': 'R' , 'Е': 'T'  , 'Н': 'Y'  ,  'Г': 'U' , 'Ш': 'I'  , 'Щ': 'O'  ,
+  'З': 'P'  , 'Ф': 'A' ,  'Ы': 'S' , 'В': 'D'  , 'А': 'F'  , 'П': 'G'  , 'Р': 'H'  ,  'О': 'J' , 'Л': 'K'  ,  'Д': 'L' ,
+  'Я': 'Z' , 'Ч': 'X'  ,  'С': 'C' , 'М' : 'V' ,  'И': 'B' , 'Т': 'N'  , 'Ь': 'M'  , 'Б': '.'  , 'Ю': '.'  ,};
+
+
+<!--};-->
+
+$("#disease_code").on('keyup', function () {
+var str = $("#disease_code").val();
+var r = '';
+for (var i = 0; i < str.length; i++) {
+if(mapKey[str.charAt(i).toUpperCase()] || str.charAt(i).match(/^[a-zA-Z0-9.]+$/)){
+ch = mapKey[str.charAt(i).toUpperCase()] || str.charAt(i);
+r += ch.toUpperCase();
+}
+//ch = mapKey[str.charAt(i)] || str.charAt(i);
+//r += ch.toUpperCase();
+}
+//$("#disease_code").val(r).trigger('keydown');
+//Тригерр, если это поле ввода для другого плагина, например autocomplete
+$("#disease_code").val(r);
+});
 
 
 </script>

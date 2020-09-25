@@ -4,6 +4,7 @@ from site_app.forms import LoginForm, PolisForm
 from flask_login import current_user, login_user, login_required, logout_user
 from site_app.models.authorization import User
 from werkzeug.urls import url_parse
+from flask import session
 
 
 @app.template_filter('formatdate')
@@ -54,4 +55,14 @@ def page_not_found_403(e):
 @app.errorhandler(404)
 def page_not_found_404(e):
     return 'Страница не найдена'
+
+
+@app.route('/record_close/')
+@login_required
+def record_close():
+    if 'patient_id' in session:
+        return redirect(url_for('patient_open', patient_id=session['patient_id']))
+    else:
+        return redirect(url_for('mse_referral_list'))
+
 

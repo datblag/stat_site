@@ -21,13 +21,13 @@
   </thead>
   <tbody>
 
-    {% for defect in defects%}
+    {% for referral in referrals%}
 
     <tr>
-      <td><a href="{{url_for('defect_edit', defectid=defect.defect_id)}}">Изменить</a></td>
-      <td>{{referrals.doctor.doctor_name}}</a></td>
-      <td>{{referrals.patient}}</td>
-      <td><a href="{{url_for('defect_delete', defectid=defect.defect_id)}}">Удалить</a></td>
+      <td><a href="{{url_for('mse_referral_edit', mse_id=referral.mse_id)}}">Изменить</a></td>
+      <td>{{referral.doctor.doctor_name}}</a></td>
+      <td>{{referral.patient}}</td>
+      <td><a href="{{url_for('mse_referral_delete', mse_id=referral.mse_id)}}">Удалить</a></td>
     </tr>
     {% endfor%}
 

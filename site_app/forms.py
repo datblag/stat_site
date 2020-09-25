@@ -108,6 +108,8 @@ class MseReferralEditForm(FlaskForm):
                                                                          Length(min=4, max=4,
                                                                          message=u'Необходжимо ввести 4 символа')])
 
+    mse_disease = StringField('Код МКБ10', id='disease_code', validators=[InputRequired(message=u'Заполните это поле')])
+
     @staticmethod
     def validate_doctor_code(self, doctor_code):
         doctor_rec = RefDoctors.query.filter_by(doctor_stat_code=doctor_code.data.strip()).first()

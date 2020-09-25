@@ -119,12 +119,18 @@ def defect_edit(defectid=0):
 def defect_delete(defectid=0):
     form = DefectDeleteForm(request.form)
     if defectid == 0 or defectid is None:
-        return redirect(url_for('defect_list'))
+        if 'patient_id' in session:
+            return redirect(url_for('patient_open', patient_id=session['patient_id']))
+        else:
+            return redirect(url_for('defect_list'))
     if request.method == 'POST' and form.validate_on_submit():
         d = DefectList.query.filter_by(defect_id=defectid).first()
         logging.warning(['delete defect', defectid])
         d.is_deleted = 1
         db.session.add(d)
         db.session.commit()
-        return redirect(url_for('defect_list'))
-    return render_template('defectdelete.html', defectid=str(defectid), form=form)
+        if 'patient_id' in session:
+            return redirect(url_for('patient_open', patient_id=session['patient_id']))
+        else:
+            return redirect(url_for('defect_list'))
+    return render_template('delete_record_answer.html', record_id=str(defectid), form=form)

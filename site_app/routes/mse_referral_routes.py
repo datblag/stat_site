@@ -36,7 +36,7 @@ def mse_referral_edit(mse_id=0):
     #     defect_rec.error_list = form.defect_codes.data
     #     defect_rec.error_comment = form.defect_comment.data
     #
-    #     defect_rec.disease = form.disease.data
+        mse_rec.mse_disease = form.mse_disease.data
     #
     #     defect_rec.period_begin = form.period_start.data
     #     defect_rec.period_end = form.period_end.data
@@ -56,13 +56,13 @@ def mse_referral_edit(mse_id=0):
         else:
             return redirect(url_for('mse_referral_list'))
     #
-    # if defectid != 0 and defectid is not None:
-    #     if defect_rec.doctor_id_ref:
-    #         doctor_ref_rec = RefDoctors.query.get(defect_rec.doctor_id_ref)
-    #         if doctor_ref_rec:
-    #             form.doctor_code.data = doctor_ref_rec.doctor_stat_code
-    #         else:
-    #             form.doctor_code.data = ""
+    if mse_id != 0 and mse_id is not None:
+        if mse_rec.doctor_id_ref:
+            doctor_ref_rec = RefDoctors.query.get(mse_rec.doctor_id_ref)
+            if doctor_ref_rec:
+                form.doctor_code.data = doctor_ref_rec.doctor_stat_code
+            else:
+                form.doctor_code.data = ""
     #
     #     form.defect_codes.data = defect_rec.error_list
     #     form.defect_comment.data = defect_rec.error_comment
@@ -70,7 +70,7 @@ def mse_referral_edit(mse_id=0):
     #     form.expert_name.data = defect_rec.expert_name
     #     form.expert_act_number.data = defect_rec.expert_act_number
     #
-    #     form.disease.data = defect_rec.disease
+            form.mse_disease.data = mse_rec.mse_disease
     #
     #     form.period_start.data = defect_rec.period_begin
     #     form.period_end.data = defect_rec.period_end
@@ -90,7 +90,6 @@ def mse_referral_edit(mse_id=0):
     return render_template('mse_referral_edit.html', mse_id=str(mse_id), form=form)
 
 
-
 @app.route('/mse_ref/', methods=['GET'])
 @login_required
 def mse_referral_list():
@@ -101,6 +100,7 @@ def mse_referral_list():
         page, per_page=FLASKY_POSTS_PER_PAGE,
         error_out=False)
     referrals = pagination.items
+    logging.warning(['refferal list', referrals])
     return render_template('mse_referral.html', pagination=pagination, referrals=referrals)
 
 
@@ -111,4 +111,27 @@ def mse_referral_close():
         return redirect(url_for('patient_open', patient_id=session['patient_id']))
     else:
         return redirect(url_for('mse_referral_list'))
+
+
+@app.route('/mse_ref_delete/<int:mse_id>', methods=['GET', 'POST'])
+@login_required
+@permission_required(Permission.EXPERT)
+def mse_referral_delete(mse_id=0):
+    form = DefectDeleteForm(request.form)
+    if mse_id == 0 or mse_id is None:
+        if 'patient_id' in session:
+            return redirect(url_for('patient_open', patient_id=session['patient_id']))
+        else:
+            return redirect(url_for('mse_referral_list'))
+    if request.method == 'POST' and form.validate_on_submit():
+        d = MseReferral.query.filter_by(mse_id=mse_id).first()
+        logging.warning(['delete mse referral', mse_id])
+        d.is_deleted = 1
+        db.session.add(d)
+        db.session.commit()
+        if 'patient_id' in session:
+            return redirect(url_for('patient_open', patient_id=session['patient_id']))
+        else:
+            return redirect(url_for('mse_referral_list'))
+    return render_template('delete_record_answer.html', record_id=str(mse_id), form=form)
 

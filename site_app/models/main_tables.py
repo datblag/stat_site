@@ -39,6 +39,7 @@ class MseReferral(db.Model, DatExtDB):
     doctor_id_ref = db.Column(db.Integer, db.ForeignKey('ref_doctors.doctor_id'))
     patient_id_ref = db.Column(db.Integer, db.ForeignKey('patients.patient_id'))
     is_deleted = db.Column(db.Integer)
+    mse_disease = db.Column(db.String(5))
 
 
 class DefectList(db.Model, DatExtDB):
