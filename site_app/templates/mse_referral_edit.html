@@ -33,45 +33,6 @@
 <a href="{{url_for('mse_referral_close')}}" class="btn btn-secondary" >Отмена</a>
 </form>
 
-<script>
-$(function() {
-        $.ajax({
-            url: '{{ url_for("autocomplete_doctors") }}'
-            }).done(function (data){
-                $('#DoctorInput').autocomplete({
-                    source: data,
-                    minLength: 2
-                });
-            });
-        });
-
-var mapKey = {
-  'Й' : 'Q',  'Ц': 'W', 'У': 'E', 'Q': 'Q', 'К': 'R' , 'Е': 'T'  , 'Н': 'Y'  ,  'Г': 'U' , 'Ш': 'I'  , 'Щ': 'O'  ,
-  'З': 'P'  , 'Ф': 'A' ,  'Ы': 'S' , 'В': 'D'  , 'А': 'F'  , 'П': 'G'  , 'Р': 'H'  ,  'О': 'J' , 'Л': 'K'  ,  'Д': 'L' ,
-  'Я': 'Z' , 'Ч': 'X'  ,  'С': 'C' , 'М' : 'V' ,  'И': 'B' , 'Т': 'N'  , 'Ь': 'M'  , 'Б': '.'  , 'Ю': '.'  ,};
-
-
-<!--};-->
-
-$("#disease_code").on('keyup', function () {
-var str = $("#disease_code").val();
-var r = '';
-for (var i = 0; i < str.length; i++) {
-if(mapKey[str.charAt(i).toUpperCase()] || str.charAt(i).match(/^[a-zA-Z0-9.]+$/)){
-ch = mapKey[str.charAt(i).toUpperCase()] || str.charAt(i);
-r += ch.toUpperCase();
-}
-//ch = mapKey[str.charAt(i)] || str.charAt(i);
-//r += ch.toUpperCase();
-}
-//$("#disease_code").val(r).trigger('keydown');
-//Тригерр, если это поле ввода для другого плагина, например autocomplete
-$("#disease_code").val(r);
-});
-
-
-</script>
-
 
 
 {% endblock body %}
