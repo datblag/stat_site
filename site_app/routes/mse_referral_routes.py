@@ -87,7 +87,7 @@ def mse_referral_edit(mse_id=0):
     #         logging.warning(session['expert_date'])
     #         form.expert_date.data = datetime.datetime.strptime(session['expert_date'], '%Y-%m-%d')
     #
-    return render_template('mse_referral_edit.html', mse_id=str(mse_id), form=form)
+    return render_template('documnets/mse_referral/mse_referral_edit.html', mse_id=str(mse_id), form=form)
 
 
 @app.route('/mse_ref/', methods=['GET'])
@@ -101,7 +101,7 @@ def mse_referral_list():
         error_out=False)
     referrals = pagination.items
     logging.warning(['refferal list', referrals])
-    return render_template('mse_referral.html', pagination=pagination, referrals=referrals)
+    return render_template('documnets/mse_referral/mse_referral.html', pagination=pagination, referrals=referrals)
 
 
 @app.route('/mse_ref_close/')

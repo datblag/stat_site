@@ -23,7 +23,7 @@ def mkb10_list(code=None):
     else:
         mkb10 = Mkb10.query.filter_by(parent_code=None).filter_by(code='').order_by(Mkb10.id)
     print(mkb10_parent.reverse(), mkb10_parent)
-    return render_template('mkb10.html', mkb10=mkb10, mkb10_parent=mkb10_parent)
+    return render_template('reference/mkb10.html', mkb10=mkb10, mkb10_parent=mkb10_parent)
 
 
 @app.route('/doctor/', methods=['GET', 'POST'])
@@ -42,15 +42,14 @@ def doctor_list(doctorid=None):
             page, per_page=FLASKY_POSTS_PER_PAGE,
             error_out=False)
         doctors = pagination.items
-        return render_template('doctor.html', pagination=pagination, doctors=doctors, form=form, current_filter=current_filter)
+        return render_template('reference/doctor.html', pagination=pagination, doctors=doctors, form=form, current_filter=current_filter)
     query = RefDoctors.query
     if 'query' in session:
         query = query.filter(RefDoctors.doctor_name.ilike('%'+session['query']+'%'))
     pagination = query.paginate(
         page, per_page=FLASKY_POSTS_PER_PAGE,
         error_out=False)
-    # print(pagination.items, session['query'])
     doctors = pagination.items
     current_filter = session['query'] if 'query' in session else None
-    return render_template('doctor.html', pagination=pagination, doctors=doctors, form=form, current_filter=current_filter)
+    return render_template('reference/doctor.html', pagination=pagination, doctors=doctors, form=form, current_filter=current_filter)
 
