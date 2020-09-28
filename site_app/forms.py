@@ -117,7 +117,6 @@ class MseReferralEditForm(FlaskForm):
             raise ValidationError('Ошибка! Код врача не найден')
 
 
-
 class DefectEditForm(FlaskForm):
     doctor_code = StringField('Код врача', id='DoctorInput', validators=[InputRequired(message=u'Заполните это поле'),
                                                                          Length(min=4, max=4,

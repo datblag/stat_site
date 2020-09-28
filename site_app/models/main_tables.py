@@ -36,10 +36,17 @@ class MseReferral(db.Model, DatExtDB):
     # направление на МСЭ
     __tablename__ = 'mse_referral'
     mse_id = db.Column(db.Integer, primary_key=True)
-    doctor_id_ref = db.Column(db.Integer, db.ForeignKey('ref_doctors.doctor_id'))
     patient_id_ref = db.Column(db.Integer, db.ForeignKey('patients.patient_id'))
+    bureau_id_ref = db.Column(db.Integer, db.ForeignKey('ref_bureau_mse.bureau_id'))
+    is_first_direction = db.Column(db.Integer)
+    disease = db.Column(db.String(5))
+    is_disability_no_set = db.Column(db.Integer)
+    disability_group_id_ref = db.Column(db.Integer, db.ForeignKey('ref_disability_group.disability_group_id'))
+    next_date = db.Column(db.Date)
+    doctor_id_ref = db.Column(db.Integer, db.ForeignKey('ref_doctors.doctor_id'))
     is_deleted = db.Column(db.Integer)
     mse_disease = db.Column(db.String(5))
+    expert_date = db.Column(db.Date)
 
 
 class DefectList(db.Model, DatExtDB):

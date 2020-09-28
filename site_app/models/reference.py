@@ -53,3 +53,20 @@ class RefDefectTypes(db.Model):
     defect_name = db.Column(db.String(500))
 
 
+class RefBureauMse(db.Model):
+    # бюро мсэ
+    __tablename__ = 'ref_bureau_mse'
+    bureau_id = db.Column(db.Integer, primary_key=True)
+    bureau_name = db.Column(db.String(15))
+    mse_referral = db.relationship('MseReferral', backref='bureau', lazy='dynamic')
+
+
+class RefDisabilityGroup(db.Model):
+    # группа инвалидности
+    __tablename__ = 'ref_disability_group'
+    disability_group_id = db.Column(db.Integer, primary_key=True)
+    disability_group_name = db.Column(db.String(15))
+    mse_referral = db.relationship('MseReferral', backref='disability_group', lazy='dynamic')
+
+
+
