@@ -44,6 +44,10 @@ def mse_referral_edit(mse_id=0):
         if form.is_disability_no_set:
             mse_rec.is_disability_no_set = 1
 
+        mse_rec.is_set_indefinitely = 0
+        if form.is_set_indefinitely:
+            mse_rec.is_set_indefinitely = 1
+
         #
         mse_rec.expert_date = form.expert_date.data
         mse_rec.next_date = form.next_date.data
@@ -110,6 +114,7 @@ def mse_referral_edit(mse_id=0):
         form.is_first_direction.data = mse_rec.is_first_direction
 
         form.is_disability_no_set.data = mse_rec.is_disability_no_set
+        form.is_set_indefinitely.data = mse_rec.is_set_indefinitely
     #
     #     form.period_start.data = defect_rec.period_begin
     #     form.period_end.data = defect_rec.period_end
