@@ -35,7 +35,12 @@ def mse_referral_edit(mse_id=0):
 
         mse_rec.bureau_id_ref = RefBureauMse.query.get(form.bureau_id.data.strip()).bureau_id
 
-    #
+        mse_rec.is_first_direction = 0
+
+        if form.is_first_direction.data:
+            mse_rec.is_first_direction = 1
+
+        #
     #     defect_rec.expert_date = form.expert_date.data
     #     defect_rec.expert_name = form.expert_name.data
     #     defect_rec.expert_act_number = form.expert_act_number.data
@@ -95,6 +100,8 @@ def mse_referral_edit(mse_id=0):
     #     form.expert_act_number.data = defect_rec.expert_act_number
     #
             form.mse_disease.data = mse_rec.mse_disease
+
+            form.is_first_direction.data = mse_rec.is_first_direction
     #
     #     form.period_start.data = defect_rec.period_begin
     #     form.period_end.data = defect_rec.period_end

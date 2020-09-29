@@ -112,7 +112,7 @@ class MseReferralEditForm(FlaskForm):
     bureau_label = StringField('', id='bureau_label')
 
 
-    is_first_direction = IntegerField('Направлен первично', id='is_first_direction')
+    is_first_direction = BooleanField('Направлен первично', id='is_first_direction', default=False)
 
     doctor_code = StringField('Код врача', id='DoctorInput', validators=[InputRequired(message=u'Заполните это поле'),
                                                                          Length(min=4, max=4,

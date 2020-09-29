@@ -44,6 +44,9 @@
                 {{ form.is_first_direction(type="checkbox", class="form-check-input")}}
                 {{ form.is_first_direction.label(class="form-check-label") }}
             </div>
+                    {% for error in form.errors.is_first_direction %}
+                            <span style="color: red;">[{{error}}]{{form.is_first_direction.data}}</span>
+                    {% endfor %}
       </div>
     </div>
     <br><br>
