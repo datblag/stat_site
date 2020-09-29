@@ -120,9 +120,9 @@ class MseReferralEditForm(FlaskForm):
 
     mse_disease = StringField('Код МКБ10', id='disease_code', validators=[InputRequired(message=u'Заполните это поле')])
 
-    is_disability_no_set = BooleanField('Инвалидность не установлена', id='is_disability_no_set')
+    is_disability_no_set = BooleanField('Инвалидность не установлена', id='is_disability_no_set', default=False)
 
-    is_set_indefinitely = BooleanField('Установлена бессрочно', id='is_set_indefinitely')
+    is_set_indefinitely = BooleanField('Установлена бессрочно', id='is_set_indefinitely', default=False)
 
     disability_group_id = StringField('Группа инвалидности', id='disability_group_id', validators=[InputRequired(message=u'Заполните это поле'),
                                                                          Length(min=1, max=1,
