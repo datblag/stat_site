@@ -3,7 +3,7 @@ from flask import render_template, request, redirect, url_for, session
 from site_app.forms import MseReferralEditForm, DefectDeleteForm
 from site_app.models.main_tables import MseReferral, Patients
 from flask_login import login_required
-from site_app.models.reference import RefDoctors
+from site_app.models.reference import RefDoctors, RefDisabilityGroup, RefBureauMse
 from site_app.models.authorization import Permission
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
 import datetime
@@ -29,6 +29,12 @@ def mse_referral_edit(mse_id=0):
 
         doctor_ref_rec = RefDoctors.query.filter_by(doctor_stat_code=form.doctor_code.data.strip()).first()
         mse_rec.doctor_id_ref = doctor_ref_rec.doctor_id
+
+        # disability_ref_rec = RefDisabilityGroup.query.filter_by(disability_group_id=form.disability_group_id.data.strip()).first()
+        mse_rec.disability_group_id_ref = RefDisabilityGroup.query.get(form.disability_group_id.data.strip()).disability_group_id
+
+        mse_rec.bureau_id_ref = RefBureauMse.query.get(form.bureau_id.data.strip()).bureau_id
+
     #
     #     defect_rec.expert_date = form.expert_date.data
     #     defect_rec.expert_name = form.expert_name.data
@@ -56,14 +62,32 @@ def mse_referral_edit(mse_id=0):
         else:
             return redirect(url_for('mse_referral_list'))
     #
-    if mse_id != 0 and mse_id is not None:
+    if mse_id != 0 and mse_id is not None and request.method == 'GET':
         if mse_rec.doctor_id_ref:
             doctor_ref_rec = RefDoctors.query.get(mse_rec.doctor_id_ref)
             if doctor_ref_rec:
                 form.doctor_code.data = doctor_ref_rec.doctor_stat_code
             else:
                 form.doctor_code.data = ""
-    #
+
+        if mse_rec.disability_group_id_ref:
+            temp_ref_rec = RefDisabilityGroup.query.get(mse_rec.disability_group_id_ref)
+            if temp_ref_rec:
+                form.disability_group_id.data = temp_ref_rec.disability_group_id
+                form.disability_group_label.data = temp_ref_rec.disability_group_name
+            else:
+                form.disability_group_id.data = ""
+                form.disability_group_label.data = ""
+
+        if mse_rec.bureau_id_ref:
+            temp_ref_rec = RefBureauMse.query.get(mse_rec.bureau_id_ref)
+            if temp_ref_rec:
+                form.bureau_id.data = temp_ref_rec.bureau_id
+                form.bureau_label.data = temp_ref_rec.bureau_name
+            else:
+                form.bureau_id.data = ""
+                form.bureau_label.data = ""
+            #
     #     form.defect_codes.data = defect_rec.error_list
     #     form.defect_comment.data = defect_rec.error_comment
     #     form.expert_date.data = defect_rec.expert_date

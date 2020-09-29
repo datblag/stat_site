@@ -79,7 +79,7 @@ def defect_edit(defectid=0):
         else:
             return redirect(url_for('defect_list'))
 
-    if defectid != 0 and defectid is not None:
+    if defectid != 0 and defectid is not None and request.method == 'GET':
         if defect_rec.doctor_id_ref:
             doctor_ref_rec = RefDoctors.query.get(defect_rec.doctor_id_ref)
             if doctor_ref_rec:

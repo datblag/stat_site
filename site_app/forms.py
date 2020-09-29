@@ -1,8 +1,8 @@
-from wtforms.fields import StringField, SubmitField, DateField, FloatField, PasswordField, BooleanField
+from wtforms.fields import StringField, SubmitField, DateField, FloatField, PasswordField, BooleanField, IntegerField
 from flask_wtf import FlaskForm
 from wtforms.widgets import TextArea
 from wtforms.validators import Length, NumberRange, InputRequired, DataRequired, ValidationError, Optional
-from site_app.models.reference import RefDoctors
+from site_app.models.reference import RefDoctors, RefBureauMse, RefDisabilityGroup
 import requests
 from bs4 import BeautifulSoup
 
@@ -104,11 +104,42 @@ class DefectDeleteForm(FlaskForm):
 
 
 class MseReferralEditForm(FlaskForm):
+    bureau_id = StringField('Филиал бюро МСЭ', id='bureau_id', validators=[InputRequired(message=u'Заполните это поле'),
+                                                                         Length(min=1, max=1,
+                                                                         message=u'Необходимо ввести 1 символ')])
+
+
+    bureau_label = StringField('', id='bureau_label')
+
+
+    is_first_direction = IntegerField('Направлен первично', id='is_first_direction')
+
     doctor_code = StringField('Код врача', id='DoctorInput', validators=[InputRequired(message=u'Заполните это поле'),
                                                                          Length(min=4, max=4,
                                                                          message=u'Необходжимо ввести 4 символа')])
 
     mse_disease = StringField('Код МКБ10', id='disease_code', validators=[InputRequired(message=u'Заполните это поле')])
+
+    is_disability_no_set = IntegerField('Инвалидность не установлена', id='is_disability_no_set')
+
+    disability_group_id = StringField('Группа инвалидности', id='disability_group_id', validators=[InputRequired(message=u'Заполните это поле'),
+                                                                         Length(min=1, max=1,
+                                                                         message=u'Необходимо ввести 1 символ')])
+    disability_group_label = StringField('', id='disability_group_label')
+
+    @staticmethod
+    def validate_bureau_id(self, bureau_id):
+        bureau_rec = RefBureauMse.query.get(bureau_id.data.strip())
+        if bureau_rec is None:
+            raise ValidationError('Ошибка! Код бюро не найден')
+
+    @staticmethod
+    def validate_disability_group_id(self, disability_group_id):
+        dis_rec = RefDisabilityGroup.query.get(disability_group_id.data.strip())
+        if dis_rec is None:
+            raise ValidationError('Ошибка! Код не найден')
+
+
 
     @staticmethod
     def validate_doctor_code(self, doctor_code):

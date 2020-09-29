@@ -8,15 +8,79 @@
 
     {{form.hidden_tag()}}
 
+   <br><br>
+
+    <div class="row">
+        <div class="col-3">
+          <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">{{ form.bureau_id.label.text }}</div>
+                </div>
+                    {{ form.bureau_id(type="text", class="form-control")}}
+                    {% for error in form.errors.bureau_id %}
+                            <span style="color: red;">[{{error}}]</span>
+                    {% endfor %}
+          </div>
+
+         </div>
+
+        <div class="col">
+            {{ form.bureau_label(type="text", class="form-control", readonly=true) }}
+
+        </div>
+
+
+
+      </div>
+
+
+   <br><br>
+
+
+
     <div class="row">
         <div class="col">
-            {{ form.doctor_code.label }}
-            {{ form.doctor_code(type="text", class="form-control")}}
-            {% for error in form.errors.doctor_code %}
-                    <span style="color: red;">[{{error}}]</span>
-            {% endfor %}<br>
+            <div class="form-check">
+                {{ form.is_first_direction(type="checkbox", class="form-check-input")}}
+                {{ form.is_first_direction.label(class="form-check-label") }}
+            </div>
       </div>
     </div>
+    <br><br>
+
+
+    <div class="row">
+        <div class="col">
+            <div class="form-check">
+                {{ form.is_disability_no_set(type="checkbox", class="form-check-input")}}
+                {{ form.is_disability_no_set.label(class="form-check-label") }}
+                <br><br>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+          <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">{{ form.disability_group_id.label.text }}</div>
+                </div>
+
+                    {{ form.disability_group_id(type="text", class="form-control")}}
+                    {% for error in form.errors.disability_group_id %}
+                            <span style="color: red;">[{{error}}]</span>
+                    {% endfor %}
+          </div>
+        </div>
+
+        <div class="col">
+            {{ form.disability_group_label(type="text", class="form-control", readonly=true) }}
+
+      </div>
+    </div>
+    <br><br>
+
+
+
 
     <div class="row">
         <div class="col">
@@ -26,6 +90,13 @@
                     <span style="color: red;">[{{error}}]</span>
             {% endfor %}<br>
         </div>
+        <div class="col">
+            {{ form.doctor_code.label }}
+            {{ form.doctor_code(type="text", class="form-control")}}
+            {% for error in form.errors.doctor_code %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+      </div>
     </div>
 
 
