@@ -53,13 +53,31 @@
 
 
     <div class="row">
-        <div class="col">
+        <div class="col-3">
             <div class="form-check">
                 {{ form.is_disability_no_set(type="checkbox", class="form-check-input")}}
                 {{ form.is_disability_no_set.label(class="form-check-label") }}
-                <br><br>
             </div>
         </div>
+
+        <div class="col-3">
+            <div class="form-check">
+                {{ form.is_set_indefinitely(type="checkbox", class="form-check-input")}}
+                {{ form.is_set_indefinitely.label(class="form-check-label") }}
+            </div>
+        </div>
+
+        <div class="col">
+         {{ form.next_date.label }}
+        {{ form.next_date(type="date", class="form-control")}}
+        {% for error in form.errors.next_date %}
+                <span style="color: red;">[{{error}}]</span>
+        {% endfor %}<br>
+
+        </div>
+
+
+
     </div>
     <div class="row">
         <div class="col-3">
@@ -79,6 +97,11 @@
             {{ form.disability_group_label(type="text", class="form-control", readonly=true) }}
 
       </div>
+
+
+
+
+
     </div>
     <br><br>
 
@@ -100,7 +123,26 @@
                     <span style="color: red;">[{{error}}]</span>
             {% endfor %}<br>
       </div>
+        <div class="col">
+         {{ form.expert_date.label }}
+        {{ form.expert_date(type="date", class="form-control")}}
+        {% for error in form.errors.expert_date %}
+                <span style="color: red;">[{{error}}]</span>
+        {% endfor %}<br>
+
+        </div>
     </div>
+
+
+ <div class="form-group">
+
+     {{ form.mse_comment.label }}
+     {{ form.mse_comment(class="form-control", rows="10") }}
+    {% for error in form.errors.mse_comment %}
+            <span style="color: red;">[{{error}}]</span>
+    {% endfor %}<br>
+  </div>
+
 
 
     <button type="submit" class="btn btn-primary">Сохранить</button>

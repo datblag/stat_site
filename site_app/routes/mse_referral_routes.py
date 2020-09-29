@@ -40,12 +40,17 @@ def mse_referral_edit(mse_id=0):
         if form.is_first_direction.data:
             mse_rec.is_first_direction = 1
 
+        mse_rec.is_disability_no_set = 0
+        if form.is_disability_no_set:
+            mse_rec.is_disability_no_set = 1
+
         #
-    #     defect_rec.expert_date = form.expert_date.data
+        mse_rec.expert_date = form.expert_date.data
+        mse_rec.next_date = form.next_date.data
     #     defect_rec.expert_name = form.expert_name.data
     #     defect_rec.expert_act_number = form.expert_act_number.data
     #     defect_rec.error_list = form.defect_codes.data
-    #     defect_rec.error_comment = form.defect_comment.data
+        mse_rec.mse_comment = form.mse_comment.data
     #
         mse_rec.mse_disease = form.mse_disease.data
     #
@@ -94,14 +99,17 @@ def mse_referral_edit(mse_id=0):
                 form.bureau_label.data = ""
             #
     #     form.defect_codes.data = defect_rec.error_list
-    #     form.defect_comment.data = defect_rec.error_comment
-    #     form.expert_date.data = defect_rec.expert_date
+        form.mse_comment.data = mse_rec.mse_comment
+        form.expert_date.data = mse_rec.expert_date
+        form.next_date.data = mse_rec.next_date
     #     form.expert_name.data = defect_rec.expert_name
     #     form.expert_act_number.data = defect_rec.expert_act_number
     #
-            form.mse_disease.data = mse_rec.mse_disease
+        form.mse_disease.data = mse_rec.mse_disease
 
-            form.is_first_direction.data = mse_rec.is_first_direction
+        form.is_first_direction.data = mse_rec.is_first_direction
+
+        form.is_disability_no_set.data = mse_rec.is_disability_no_set
     #
     #     form.period_start.data = defect_rec.period_begin
     #     form.period_end.data = defect_rec.period_end

@@ -120,12 +120,22 @@ class MseReferralEditForm(FlaskForm):
 
     mse_disease = StringField('Код МКБ10', id='disease_code', validators=[InputRequired(message=u'Заполните это поле')])
 
-    is_disability_no_set = IntegerField('Инвалидность не установлена', id='is_disability_no_set')
+    is_disability_no_set = BooleanField('Инвалидность не установлена', id='is_disability_no_set')
+
+    is_set_indefinitely = BooleanField('Установлена бессрочно', id='is_set_indefinitely')
 
     disability_group_id = StringField('Группа инвалидности', id='disability_group_id', validators=[InputRequired(message=u'Заполните это поле'),
                                                                          Length(min=1, max=1,
                                                                          message=u'Необходимо ввести 1 символ')])
     disability_group_label = StringField('', id='disability_group_label')
+
+    expert_date = DateField('Дата экспертизы', id='ExpertDate',
+                            validators=[InputRequired(message=u'Введите дату экспертизы')])
+
+    next_date = DateField('Дата следующей явки', id='NextDate', validators=[Optional()])
+
+    mse_comment = StringField('Описание дефекта', id='DefectCommentTextArea', widget=TextArea())
+
 
     @staticmethod
     def validate_bureau_id(self, bureau_id):
