@@ -41,11 +41,11 @@ def mse_referral_edit(mse_id=0):
             mse_rec.is_first_direction = 1
 
         mse_rec.is_disability_no_set = 0
-        if form.is_disability_no_set:
+        if form.is_disability_no_set.data:
             mse_rec.is_disability_no_set = 1
 
         mse_rec.is_set_indefinitely = 0
-        if form.is_set_indefinitely:
+        if form.is_set_indefinitely.data:
             mse_rec.is_set_indefinitely = 1
 
         #
