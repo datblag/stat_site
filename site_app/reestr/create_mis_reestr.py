@@ -24,12 +24,21 @@ def main():
     c_ogrn = XUserSettings().get_ogrn()
     logging.warning(['ОГРН', c_ogrn])
 
-    lpuid = OmsLpu.get_lpuid(c_ogrn)
+    lpuid = OmsLpu.get_lpuid(OmsLpu, c_ogrn=c_ogrn)
 
     logging.warning(lpuid)
 
-    tmp_department = session_mis.query(OmsDepartmentTable.departmentid, OmsDepartmentTable.rf_lpuid).\
-        filter(OmsDepartmentTable.rf_kl_departmenttypeid == 3)
+    c_okato = session_mis.query(OmsLpu).get(lpuid).okato.c_okato[0:2]+'000'
+    logging.warning(c_okato)
+
+    okatoid = OmsOkato.get_okatoid(OmsOkato, c_okato=c_okato)
+    logging.warning(okatoid)
+
+    r = session_mis.query(OmsStf).filter(OmsStf.rf_okato == okatoid).all()
+    logging.warning(r[0].stfid)
+
+    # tmp_department = session_mis.query(OmsDepartmentTable.departmentid, OmsDepartmentTable.rf_lpuid).\
+    #     filter(OmsDepartmentTable.rf_kl_departmenttypeid == 3)
 
     # OmsDepartmentTable.department_list(OmsDepartmentTable, session_mis)
 

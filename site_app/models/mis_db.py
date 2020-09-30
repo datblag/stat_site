@@ -91,7 +91,26 @@ class OmsLpu(BaseMis):
     lpuid = Column(INT, primary_key=True)
     c_ogrn = Column(VARCHAR(15))
     stlpu = Column(VARCHAR(1))
+    rf_okatoid = Column(INT, ForeignKey('oms_okato.okatoid'))
 
-    def get_lpuid(self, c_ogrn):
+    def get_lpuid(self, c_ogrn=''):
         select = session_mis.query(func.isnull(func.min(OmsLpu.lpuid), 0).label('lpuid'))
         return select.filter(OmsLpu.c_ogrn == c_ogrn).filter(OmsLpu.stlpu == '1').all()[0].lpuid
+
+
+class OmsOkato(BaseMis):
+    __tablename__ = 'oms_okato'
+    okatoid = Column(INT, primary_key=True)
+    oms_lpu = relationship('OmsLpu', backref='okato', lazy='dynamic')
+    oms_stf = relationship('OmsStf', backref='okato', lazy='dynamic')
+    c_okato = Column(VARCHAR(15))
+
+    def get_okatoid(self, c_okato):
+        return session_mis.query(OmsOkato.okatoid).filter(OmsOkato.c_okato == c_okato).all()[0].okatoid
+
+
+# справочник ТФОМС
+class OmsStf(BaseMis):
+    __tablename__ = 'oms_stf'
+    stfid = Column(INT, primary_key=True)
+    rf_okato = Column(INT, ForeignKey('oms_okato.okatoid'))
