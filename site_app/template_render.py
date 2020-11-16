@@ -1,7 +1,7 @@
 from openpyxl import Workbook, styles
 import os, random, shutil, string, subprocess
 import datetime
-
+import logging
 
 class TemplateRender:
     align_center_center = styles.Alignment(horizontal='center',
@@ -86,6 +86,7 @@ class TemplateRender:
         self.current_line += 1
 
     def close_template_file(self):
+        logging.warning(self.file_name)
         self.wb.save(filename=self.file_name)
         self.wb.close()
         # if self.copyfile:

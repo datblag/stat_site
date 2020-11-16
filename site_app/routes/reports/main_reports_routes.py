@@ -29,9 +29,12 @@ def smo_expert_defects():
                        ['Штраф', 20], ['Дата экспертизы', 20], ['Эксперт', 20], ['Акт', 20]])
 
     for defect in query:
+        otdel_name = ""
+        if defect.doctor.otdel is not None:
+            otdel_name = defect.doctor.otdel.otdel_name
         logging.warning([defect, defect.doctor])
         tr.add_data_row([[defect.patient.num, defect.patient.fam, defect.patient.im, defect.patient.ot,
-                          defect.patient.birthday, defect.doctor.doctor_name, defect.doctor.otdel.otdel_name,
+                          defect.patient.birthday, defect.doctor.doctor_name, otdel_name,
                           defect.disease, defect.period_begin, defect.period_end, defect.error_list,
                           defect.error_comment, defect.sum_service, defect.sum_no_pay, defect.get_sum_total(),
                           defect.sum_penalty, defect.expert_date, defect.expert_name, defect.expert_act_number]])
