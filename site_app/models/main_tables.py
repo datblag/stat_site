@@ -39,7 +39,7 @@ class MseReferral(db.Model, DatExtDB):
     patient_id_ref = db.Column(db.Integer, db.ForeignKey('patients.patient_id'))
     bureau_id_ref = db.Column(db.Integer, db.ForeignKey('ref_bureau_mse.bureau_id'))
     is_first_direction = db.Column(db.Integer)
-    disease = db.Column(db.String(5))
+    # disease = db.Column(db.String(5))
     is_disability_no_set = db.Column(db.Integer)
     is_set_indefinitely = db.Column(db.Integer)  # установлена бессрочно
     disability_group_id_ref = db.Column(db.Integer, db.ForeignKey('ref_disability_group.disability_group_id'))

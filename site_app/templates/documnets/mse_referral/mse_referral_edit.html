@@ -117,18 +117,6 @@
 
     <br><br>
 
-    <div class="row">
-        <div class="col">
-            <div class="form-check">
-                {{ form.degree_disability.label }}
-                {{ form.degree_disability(type="number", class="form-control")}}
-            </div>
-                    {% for error in form.errors.degree_disability %}
-                            <span style="color: red;">[{{error}}]{{form.degree_disability.data}}</span>
-                    {% endfor %}
-      </div>
-    </div>
-    <br><br>
 
 
     <div class="row">

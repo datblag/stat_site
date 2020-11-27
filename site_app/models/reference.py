@@ -60,6 +60,9 @@ class RefBureauMse(db.Model):
     bureau_name = db.Column(db.String(15))
     mse_referral = db.relationship('MseReferral', backref='bureau', lazy='dynamic')
 
+    def __repr__(self):
+        return '{}'.format(self.bureau_name)
+
 
 class RefDisabilityGroup(db.Model):
     # группа инвалидности
@@ -68,5 +71,7 @@ class RefDisabilityGroup(db.Model):
     disability_group_name = db.Column(db.String(15))
     mse_referral = db.relationship('MseReferral', backref='disability_group', lazy='dynamic')
 
+    def __repr__(self):
+        return '{}'.format(self.disability_group_name)
 
 
