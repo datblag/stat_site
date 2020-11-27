@@ -4,6 +4,9 @@ import os
 import datetime
 from site_app.models.mis_db import HltMkabTable, session_mis
 from sqlalchemy import func
+MAPPING_BY_DATE = 1
+MAPPING_BY_YEAR = 0
+import logging
 
 
 def main():
@@ -11,14 +14,13 @@ def main():
     file_name = os.path.join(path_name, 'Госпитализация за СЕНТЯБРЬ 2020.xlsx')
     start_row = 10
     start_row = start_row - 1  # нумерация с 0 !!!!!!!!!!!!!!!!!!
-    TYPE_MAPPING_BIRDDAY = 1  # 0 год рождения; 1 дата рождения
-
+    type_mapping_birthday = MAPPING_BY_DATE
 
     fam_col = column_index_from_string('C')
     dr_col = column_index_from_string('D')
     result_col_history = column_index_from_string('T')
 
-    find_record = 0
+    find_records_count = 0
 
     wb = openpyxl.load_workbook(file_name)
     ws = wb.active
@@ -57,27 +59,19 @@ def main():
         if ot is not None:
             query = query.filter(func.rtrim(func.ltrim(HltMkabTable.ot)) == ot.strip())
 
-        if TYPE_MAPPING_BIRDDAY == 0:
+        if type_mapping_birthday == MAPPING_BY_YEAR:
             query = query.filter(HltMkabTable.date_bd >= datetime.date(year=year_bird, month=1, day=1))
             query = query.filter(HltMkabTable.date_bd <= datetime.date(year=year_bird, month=12, day=31))
-        elif TYPE_MAPPING_BIRDDAY == 1:
+        elif type_mapping_birthday == MAPPING_BY_DATE:
             query = query.filter(HltMkabTable.date_bd == year_bird)
         recs = query.all()
         print(recs)
         if recs:
-            find_record += 1
-            # print(row[result_col_history].value)
+            find_records_count += 1
             ws.cell(row_num, result_col_history).value = recs[0].num
-            # row[result_col_history].value = recs[0].num
-
-
-        # print(fam.split(' '),year_bird, datetime.date(year=year_bird, month=1, day=1))
-        # for col_num, cel in enumerate(row):
-        #     if TYPE_MAPPING == 0:
-        #         if col_num == fam_col or dr_col == col_num:
-        #             print(cel.value)
-    print(find_record)
+    print(find_records_count)
     wb.save(file_name)
+
 
 if __name__ == '__main__':
     main()

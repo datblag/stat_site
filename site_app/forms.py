@@ -5,6 +5,7 @@ from wtforms.validators import Length, NumberRange, InputRequired, DataRequired,
 from site_app.models.reference import RefDoctors, RefBureauMse, RefDisabilityGroup
 import requests
 from bs4 import BeautifulSoup
+import logging
 
 
 class SearchDoctorForm(FlaskForm):
@@ -124,9 +125,7 @@ class MseReferralEditForm(FlaskForm):
 
     is_set_indefinitely = BooleanField('Установлена бессрочно', id='is_set_indefinitely', default=False)
 
-    disability_group_id = StringField('Группа инвалидности', id='disability_group_id', validators=[InputRequired(message=u'Заполните это поле'),
-                                                                         Length(min=1, max=1,
-                                                                         message=u'Необходимо ввести 1 символ')])
+    disability_group_id = StringField('Группа инвалидности', id='disability_group_id')
     disability_group_label = StringField('', id='disability_group_label')
 
     expert_date = DateField('Дата экспертизы', id='ExpertDate',
@@ -136,6 +135,7 @@ class MseReferralEditForm(FlaskForm):
 
     mse_comment = StringField('Описание дефекта', id='DefectCommentTextArea', widget=TextArea())
 
+    degree_disability = IntegerField('% утраты трудоспособности', id='degree_disability', default=0)
 
     @staticmethod
     def validate_bureau_id(self, bureau_id):
@@ -145,8 +145,13 @@ class MseReferralEditForm(FlaskForm):
 
     @staticmethod
     def validate_disability_group_id(self, disability_group_id):
+        if not disability_group_id.data.isdigit() or self.is_disability_no_set.data:
+            disability_group_id.data = '0'
+
+        logging.warning(['is_disability_no_set', self.is_disability_no_set.data])
+
         dis_rec = RefDisabilityGroup.query.get(disability_group_id.data.strip())
-        if dis_rec is None:
+        if dis_rec is None and not self.is_disability_no_set.data:
             raise ValidationError('Ошибка! Код не найден')
 
 

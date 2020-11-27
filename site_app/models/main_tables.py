@@ -49,6 +49,7 @@ class MseReferral(db.Model, DatExtDB):
     mse_disease = db.Column(db.String(5))
     expert_date = db.Column(db.Date)
     mse_comment = db.Column(db.String(250))
+    degree_disability = db.Column(db.Integer)
 
 
 class DefectList(db.Model, DatExtDB):

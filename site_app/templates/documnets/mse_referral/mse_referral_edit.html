@@ -53,7 +53,7 @@
 
 
     <div class="row">
-        <div class="col-3">
+        <div class="col-4">
             <div class="form-check">
                 {{ form.is_disability_no_set(type="checkbox", class="form-check-input")}}
                 {{ form.is_disability_no_set.label(class="form-check-label") }}
@@ -69,6 +69,7 @@
 
         <div class="col">
          {{ form.next_date.label }}
+            <br><br>
         {{ form.next_date(type="date", class="form-control")}}
         {% for error in form.errors.next_date %}
                 <span style="color: red;">[{{error}}]</span>
@@ -76,9 +77,20 @@
 
         </div>
 
+        <div class="col">
+            <div class="form-check">
+                {{ form.degree_disability.label }}
+                {{ form.degree_disability(type="number", class="form-control")}}
+            </div>
+                    {% for error in form.errors.degree_disability %}
+                            <span style="color: red;">[{{error}}]{{form.degree_disability.data}}</span>
+                    {% endfor %}
+      </div>
 
 
     </div>
+
+    <br>
     <div class="row">
         <div class="col-3">
           <div class="input-group mb-2">
@@ -101,11 +113,22 @@
 
 
 
-
     </div>
+
     <br><br>
 
-
+    <div class="row">
+        <div class="col">
+            <div class="form-check">
+                {{ form.degree_disability.label }}
+                {{ form.degree_disability(type="number", class="form-control")}}
+            </div>
+                    {% for error in form.errors.degree_disability %}
+                            <span style="color: red;">[{{error}}]{{form.degree_disability.data}}</span>
+                    {% endfor %}
+      </div>
+    </div>
+    <br><br>
 
 
     <div class="row">

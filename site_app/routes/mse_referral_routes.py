@@ -25,14 +25,17 @@ def mse_referral_edit(mse_id=0):
         if mse_id == 0:
             mse_rec = MseReferral()
             mse_rec.is_deleted = 0
+            mse_rec.degree_disability = 0
             mse_rec.patient = Patients.query.get(session['patient_id'])
 
         doctor_ref_rec = RefDoctors.query.filter_by(doctor_stat_code=form.doctor_code.data.strip()).first()
         mse_rec.doctor_id_ref = doctor_ref_rec.doctor_id
 
-        # disability_ref_rec = RefDisabilityGroup.query.filter_by(disability_group_id=form.disability_group_id.data.strip()).first()
-        mse_rec.disability_group_id_ref = RefDisabilityGroup.query.get(form.disability_group_id.data.strip()).disability_group_id
-
+        disability_group_rec = RefDisabilityGroup.query.get(form.disability_group_id.data.strip())
+        if disability_group_rec is not None:
+            mse_rec.disability_group_id_ref = disability_group_rec.disability_group_id
+        else:
+            mse_rec.disability_group_id_ref = None
         mse_rec.bureau_id_ref = RefBureauMse.query.get(form.bureau_id.data.strip()).bureau_id
 
         mse_rec.is_first_direction = 0
@@ -44,33 +47,18 @@ def mse_referral_edit(mse_id=0):
         if form.is_disability_no_set.data:
             mse_rec.is_disability_no_set = 1
 
+        mse_rec.degree_disability = form.degree_disability.data
+
         mse_rec.is_set_indefinitely = 0
         if form.is_set_indefinitely.data:
             mse_rec.is_set_indefinitely = 1
 
-        #
         mse_rec.expert_date = form.expert_date.data
         mse_rec.next_date = form.next_date.data
-    #     defect_rec.expert_name = form.expert_name.data
-    #     defect_rec.expert_act_number = form.expert_act_number.data
-    #     defect_rec.error_list = form.defect_codes.data
         mse_rec.mse_comment = form.mse_comment.data
-    #
         mse_rec.mse_disease = form.mse_disease.data
-    #
-    #     defect_rec.period_begin = form.period_start.data
-    #     defect_rec.period_end = form.period_end.data
-    #
-    #     defect_rec.sum_service = form.sum_service.data
-    #     defect_rec.sum_no_pay = form.sum_no_pay.data
-    #     defect_rec.sum_penalty = form.sum_penalty.data
-    #
         db.session.add(mse_rec)
         db.session.commit()
-    #     session['expert_date'] = form.expert_date.data.strftime('%Y-%m-%d')
-    #     session['expert_name'] = form.expert_name.data
-    #     session['expert_act_number'] = form.expert_act_number.data
-    #
         if 'patient_id' in session:
             return redirect(url_for('patient_open', patient_id=session['patient_id']))
         else:
@@ -101,36 +89,15 @@ def mse_referral_edit(mse_id=0):
             else:
                 form.bureau_id.data = ""
                 form.bureau_label.data = ""
-            #
-    #     form.defect_codes.data = defect_rec.error_list
+        form.degree_disability.data = mse_rec.degree_disability
         form.mse_comment.data = mse_rec.mse_comment
         form.expert_date.data = mse_rec.expert_date
         form.next_date.data = mse_rec.next_date
-    #     form.expert_name.data = defect_rec.expert_name
-    #     form.expert_act_number.data = defect_rec.expert_act_number
-    #
         form.mse_disease.data = mse_rec.mse_disease
-
         form.is_first_direction.data = mse_rec.is_first_direction
 
         form.is_disability_no_set.data = mse_rec.is_disability_no_set
         form.is_set_indefinitely.data = mse_rec.is_set_indefinitely
-    #
-    #     form.period_start.data = defect_rec.period_begin
-    #     form.period_end.data = defect_rec.period_end
-    #
-    #     form.sum_service.data = defect_rec.sum_service
-    #     form.sum_no_pay.data = defect_rec.sum_no_pay
-    #     form.sum_penalty.data = defect_rec.sum_penalty
-    # else:
-    #     if 'expert_act_number' in session:
-    #         form.expert_act_number.data = session['expert_act_number']
-    #     if 'expert_name' in session:
-    #         form.expert_name.data = session['expert_name']
-    #     if 'expert_date' in session:
-    #         logging.warning(session['expert_date'])
-    #         form.expert_date.data = datetime.datetime.strptime(session['expert_date'], '%Y-%m-%d')
-    #
     return render_template('documnets/mse_referral/mse_referral_edit.html', mse_id=str(mse_id), form=form)
 
 
