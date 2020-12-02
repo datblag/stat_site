@@ -10,8 +10,8 @@ import logging
 
 
 def main():
-    path_name = r'S:\20201006_госпитализация'
-    file_name = os.path.join(path_name, 'Госпитализация за СЕНТЯБРЬ 2020.xlsx')
+    path_name = r's:\20201201_госпитализация'
+    file_name = os.path.join(path_name, '10_2020.xlsx')
     start_row = 10
     start_row = start_row - 1  # нумерация с 0 !!!!!!!!!!!!!!!!!!
     type_mapping_birthday = MAPPING_BY_DATE
