@@ -169,6 +169,7 @@ class MedServiceEditForm(FlaskForm):
                                                                          message=u'Необходжимо ввести 4 символа')])
     service_date = DateField('Дата', id='ServiceDate',
                              validators=[InputRequired(message=u'Введите дату оказания услуги')])
+    disease = StringField('Диагноз', id='disease_code', validators=[InputRequired(message=u'Заполните это поле')])
 
     @staticmethod
     def validate_doctor_code(self, doctor_code):

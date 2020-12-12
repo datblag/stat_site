@@ -21,7 +21,7 @@ def defect_list():
         page, per_page=FLASKY_POSTS_PER_PAGE,
         error_out=False)
     defects = pagination.items
-    return render_template('documnets/smo_defect/defect.html', pagination=pagination, defects=defects)
+    return render_template('documents/smo_defect/defect.html', pagination=pagination, defects=defects)
 
 
 @login_required
@@ -110,7 +110,7 @@ def defect_edit(defectid=0):
             logging.warning(session['expert_date'])
             form.expert_date.data = datetime.datetime.strptime(session['expert_date'], '%Y-%m-%d')
 
-    return render_template('documnets/smo_defect/defectedit.html', defectid=str(defectid), form=form)
+    return render_template('documents/smo_defect/defectedit.html', defectid=str(defectid), form=form)
 
 
 @app.route('/defect_delete/<int:defectid>', methods=['GET', 'POST'])

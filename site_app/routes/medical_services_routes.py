@@ -15,5 +15,5 @@ def med_service_edit(service_id=0):
         mse_rec = MedicalServices.query.get_or_404(service_id)
     # # print(form.validate_on_submit(), request.method, request)
     if request.method == 'POST' and form.validate_on_submit():
-        pass
-    return ''
+        return ''
+    return render_template('documents/med_service/med_service_edit.html', service_id=str(service_id), form=form)

@@ -98,7 +98,7 @@ def mse_referral_edit(mse_id=0):
 
         form.is_disability_no_set.data = mse_rec.is_disability_no_set
         form.is_set_indefinitely.data = mse_rec.is_set_indefinitely
-    return render_template('documnets/mse_referral/mse_referral_edit.html', mse_id=str(mse_id), form=form)
+    return render_template('documents/mse_referral/mse_referral_edit.html', mse_id=str(mse_id), form=form)
 
 
 @app.route('/mse_ref/', methods=['GET'])
@@ -112,7 +112,7 @@ def mse_referral_list():
         error_out=False)
     referrals = pagination.items
     logging.warning(['refferal list', referrals])
-    return render_template('documnets/mse_referral/mse_referral.html', pagination=pagination, referrals=referrals)
+    return render_template('documents/mse_referral/mse_referral.html', pagination=pagination, referrals=referrals)
 
 
 @app.route('/mse_ref_close/')
