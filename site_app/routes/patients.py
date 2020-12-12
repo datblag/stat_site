@@ -69,9 +69,23 @@ def patient_open(patient_id=0):
         form.birthday.data = patient_rec.birthday
         form.num.data = patient_rec.num
         session['patient_id'] = patient_rec.patient_id
-        return render_template('patientopen.html', form=form, patient=patient_rec,
-                               defect_list=DefectList.get_list(DefectList, patient_id=patient_rec.patient_id).all(),
-                               mse_referral=MseReferral.get_list(MseReferral, patient_id=patient_rec.patient_id).all())
+        document_list = []
+        defect_list = DefectList.get_list(DefectList, patient_id=patient_rec.patient_id).all()
+        for rec in defect_list:
+            document_list.append({'type': 1, 'typename': 'Экспертиза СМО', 'id': rec.defect_id,
+                                  'date': rec.expert_date, 'doctor': rec.doctor.doctor_name})
+
+        mse_list = MseReferral.get_list(MseReferral, patient_id=patient_rec.patient_id).all()
+        for rec in mse_list:
+            document_list.append({'type': 2, 'typename': 'Направление на МСЭ', 'id': rec.mse_id,
+                                  'date': rec.expert_date, 'doctor': rec.doctor.doctor_name})
+
+        document_list.sort(key=lambda dictionary: dictionary['date'])
+
+        return render_template('patientopen.html', form=form, patient=patient_rec, document_list=document_list)
+        # return render_template('patientopen.html', form=form, patient=patient_rec,
+        #                        defect_list=DefectList.get_list(DefectList, patient_id=patient_rec.patient_id).all(),
+        #                        mse_referral=MseReferral.get_list(MseReferral, patient_id=patient_rec.patient_id).all())
     return redirect(url_for('patients_list'))
 
 

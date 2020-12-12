@@ -3,6 +3,7 @@ import logging
 import datetime
 from sqlalchemy import func
 
+
 def main():
 
     date = datetime.date(2020, 7, 23)  # поздноподанные с даты

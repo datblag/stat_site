@@ -133,4 +133,4 @@ def defect_delete(defectid=0):
             return redirect(url_for('patient_open', patient_id=session['patient_id']))
         else:
             return redirect(url_for('defect_list'))
-    return render_template('documnets/smo_defect/delete_record_answer.html', record_id=str(defectid), form=form)
+    return render_template('delete_record_answer.html', record_id=str(defectid), form=form)

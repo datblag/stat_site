@@ -11,14 +11,14 @@ import logging
 
 def main():
     path_name = r's:\20201201_госпитализация'
-    file_name = os.path.join(path_name, '10_2020.xlsx')
-    start_row = 10
+    file_name = os.path.join(path_name, '11_2020.xlsx')
+    start_row = 2
     start_row = start_row - 1  # нумерация с 0 !!!!!!!!!!!!!!!!!!
     type_mapping_birthday = MAPPING_BY_DATE
 
-    fam_col = column_index_from_string('C')
-    dr_col = column_index_from_string('D')
-    result_col_history = column_index_from_string('T')
+    fam_col = column_index_from_string('B')
+    dr_col = column_index_from_string('C')
+    result_col_history = column_index_from_string('H')
 
     find_records_count = 0
 

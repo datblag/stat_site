@@ -50,23 +50,31 @@
   <thead class="thead-dark">
     <tr>
       <th scope="col"></th>
+      <th scope="col">Вид записи</th>
+      <th scope="col">Дата</th>
       <th scope="col">Врач</th>
-      <th scope="col">Дефект</th>
-      <th scope="col">Сумма</th>
-      <th scope="col">Подлежит оплате</th>
       <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
 
-    {% for defect in defect_list%}
+    {% for document in document_list%}
     <tr>
-      <td><a href="{{url_for('defect_edit', defectid=defect.defect_id)}}">Изменить</a></td>
-      <td>{{defect.doctor.doctor_name}}</a></td>
-      <td>{{defect.error_list}}</td>
-      <td>{{defect.sum_service}}</td>
-      <td>{{defect.sum_service-defect.sum_no_pay-defect.sum_penalty}}</td>
-      <td><a href="{{url_for('defect_delete', defectid=defect.defect_id)}}">Удалить</a></td>
+      {% if document.type == 1%}
+          <td><a href="{{url_for('defect_edit', defectid=document.id)}}">Изменить</a></td>
+      {% endif %}
+      {% if document.type == 2%}
+          <td><a href="{{url_for('mse_referral_edit', mse_id=document.id)}}">Изменить</a></td>
+      {% endif %}
+      <td>{{document.typename}}</a></td>
+      <td>{{document.date|formatdate}}</td>
+      <td>{{document.doctor}}</td>
+      {% if document.type == 1%}
+          <td><a href="{{url_for('defect_delete', defectid=document.id)}}">Удалить</a></td>
+      {% endif %}
+      {% if document.type == 2%}
+          <td><a href="{{url_for('mse_referral_delete', mse_id=document.id)}}">Удалить</a></td>
+      {% endif %}
     </tr>
     {% endfor%}
 
@@ -76,33 +84,6 @@
 
 </div>
 
-<div class="col">
-
-
-<table class="table">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">Врач</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-
-    {% for mse in mse_referral%}
-    <tr>
-      <td><a href="{{url_for('mse_referral_edit', mse_id=mse.mse_id)}}">Изменить</a></td>
-      <td>{{mse.doctor.doctor_name}}</a></td>
-      <td><a href="{{url_for('mse_referral_delete', mse_id=mse.mse_id)}}">Удалить</a></td>
-    </tr>
-    {% endfor%}
-
-
-  </tbody>
-</table>
-
-</div>
-</div>
 
 {% endblock row %}
 
