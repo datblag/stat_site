@@ -1,5 +1,6 @@
 from site_app import db
 from .main_tables import DefectList, MseReferral
+from .medical_services import MedicalServices
 
 
 class Mkb10(db.Model):
@@ -27,6 +28,7 @@ class RefDoctors(db.Model):
     doctor_name = db.Column(db.String(35))
     defects = db.relationship('DefectList', backref='doctor', lazy='dynamic')
     mse_referral = db.relationship('MseReferral', backref='doctor', lazy='dynamic')
+    med_services = db.relationship('MedicalServices', backref='doctor', lazy='dynamic')
     otdel_id_ref = db.Column(db.Integer, db.ForeignKey('ref_otdels.otdel_id'))
 
     def __repr__(self):

@@ -163,6 +163,20 @@ class MseReferralEditForm(FlaskForm):
             raise ValidationError('Ошибка! Код врача не найден')
 
 
+class MedServiceEditForm(FlaskForm):
+    doctor_code = StringField('Код врача', id='DoctorInput', validators=[InputRequired(message=u'Заполните это поле'),
+                                                                         Length(min=4, max=4,
+                                                                         message=u'Необходжимо ввести 4 символа')])
+    service_date = DateField('Дата', id='ServiceDate',
+                             validators=[InputRequired(message=u'Введите дату оказания услуги')])
+
+    @staticmethod
+    def validate_doctor_code(self, doctor_code):
+        doctor_rec = RefDoctors.query.filter_by(doctor_stat_code=doctor_code.data.strip()).first()
+        if doctor_rec is None:
+            raise ValidationError('Ошибка! Код врача не найден')
+
+
 class DefectEditForm(FlaskForm):
     doctor_code = StringField('Код врача', id='DoctorInput', validators=[InputRequired(message=u'Заполните это поле'),
                                                                          Length(min=4, max=4,

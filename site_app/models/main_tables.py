@@ -1,13 +1,7 @@
 from site_app import db
 import datetime
-
-
-class DatExtDB:
-    def get_list(self, patient_id=None, order=None):
-        query = self.query.filter(self.is_deleted != 1).order_by(order)
-        if patient_id is not None:
-            query = query.filter_by(patient_id_ref=patient_id)
-        return query
+from .medical_services import MedicalServices
+from .dbext import DatExtDB
 
 
 class Patients(db.Model, DatExtDB):
@@ -23,6 +17,7 @@ class Patients(db.Model, DatExtDB):
     is_deleted = db.Column(db.Integer)
     defects_smo_expert = db.relationship('DefectList', backref='patient', lazy='dynamic')
     mse_referral = db.relationship('MseReferral', backref='patient', lazy='dynamic')
+    med_services = db.relationship('MedicalServices', backref='patient', lazy='dynamic')
 
     def get_age(self):
         today = datetime.date.today()
