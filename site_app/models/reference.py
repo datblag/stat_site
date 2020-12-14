@@ -15,6 +15,7 @@ class Mkb10(db.Model):
     addl_code = db.Column(db.Integer)
     actual = db.Column(db.Boolean)
     date = db.Column(db.Date)
+    med_services = db.relationship('MedicalServices', backref='disease', lazy='dynamic')
 
     def __repr__(self):
         return '<{}{}>'.format(self.code, self.name)

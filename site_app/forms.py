@@ -3,7 +3,7 @@ from wtforms.fields import StringField, SubmitField, DateField, FloatField, Pass
 from flask_wtf import FlaskForm
 from wtforms.widgets import TextArea
 from wtforms.validators import Length, NumberRange, InputRequired, DataRequired, ValidationError, Optional
-from site_app.models.reference import RefDoctors, RefBureauMse, RefDisabilityGroup
+from site_app.models.reference import RefDoctors, RefBureauMse, RefDisabilityGroup, Mkb10
 import requests
 from bs4 import BeautifulSoup
 import logging
@@ -155,8 +155,6 @@ class MseReferralEditForm(FlaskForm):
         if dis_rec is None and not self.is_disability_no_set.data:
             raise ValidationError('Ошибка! Код не найден')
 
-
-
     @staticmethod
     def validate_doctor_code(self, doctor_code):
         doctor_rec = RefDoctors.query.filter_by(doctor_stat_code=doctor_code.data.strip()).first()
@@ -179,6 +177,17 @@ class MedServiceEditForm(FlaskForm):
         doctor_rec = RefDoctors.query.filter_by(doctor_stat_code=doctor_code.data.strip()).first()
         if doctor_rec is None:
             raise ValidationError('Ошибка! Код врача не найден')
+
+    @staticmethod
+    def validate_disease(self, disease):
+        disease_rec = Mkb10.query.filter_by(code=disease.data.strip()).first()
+        if disease_rec is None:
+            raise ValidationError('Ошибка! диагноз не найден')
+
+    @staticmethod
+    def validate_service_ref(self, service_ref):
+        if service_ref.data is None or not service_ref.data.isdigit() or int(service_ref.data) <= 0:
+            raise ValidationError('Ошибка! Укажите услугу')
 
 
 class DefectEditForm(FlaskForm):

@@ -81,7 +81,12 @@ def patient_open(patient_id=0):
             document_list.append({'type': 2, 'typename': 'Направление на МСЭ', 'id': rec.mse_id,
                                   'date': rec.expert_date, 'doctor': rec.doctor.doctor_name})
 
-        document_list.sort(key=lambda dictionary: dictionary['date'])
+        service_list = MseReferral.get_list(MedicalServices, patient_id=patient_rec.patient_id).all()
+        for rec in service_list:
+            document_list.append({'type': 3, 'typename': 'Мед. услуги', 'id': rec.service_id,
+                                  'date': rec.service_date, 'doctor': rec.doctor.doctor_name})
+
+        document_list.sort(key=lambda dictionary: dictionary['date'],  reverse = True)
 
         return render_template('patientopen.html', form=form, patient=patient_rec, document_list=document_list)
         # return render_template('patientopen.html', form=form, patient=patient_rec,

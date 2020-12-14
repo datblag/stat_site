@@ -46,7 +46,9 @@
         <div class="row">
             {{ form.service_ref.label }}
             {{ form.service_ref(class="form-control") }}
-            <br>
+            {% for error in form.errors.service_ref %}
+                    <span style="color: red;">[{{error}}]</span>
+            {% endfor %}            <br>
         </div>
 
 
@@ -54,6 +56,7 @@
     <br>
 
     <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a href="{{url_for('med_service_close')}}" class="btn btn-secondary" >Отмена</a>
 </form>
 
 

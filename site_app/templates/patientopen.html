@@ -67,6 +67,9 @@
       {% if document.type == 2%}
           <td><a href="{{url_for('mse_referral_edit', mse_id=document.id)}}">Изменить</a></td>
       {% endif %}
+      {% if document.type == 3%}
+          <td><a href="{{url_for('med_service_edit', service_id=document.id)}}">Изменить</a></td>
+      {% endif %}
       <td>{{document.typename}}</a></td>
       <td>{{document.date|formatdate}}</td>
       <td>{{document.doctor}}</td>

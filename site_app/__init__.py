@@ -32,7 +32,6 @@ from site_app.models.medical_services import RefKmu
 from site_app.models.db_generate import mkb_loader, ref_loader
 
 
-
 @app.shell_context_processor
 def make_shell_context():
     return {'db': db, 'User': User, 'DefectList': DefectList, 'session': db.session, 'Mkb10': Mkb10,

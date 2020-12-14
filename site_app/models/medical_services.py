@@ -11,6 +11,7 @@ class MedicalServices(db.Model, DatExtDB):
     is_deleted = db.Column(db.Integer)
     doctor_id_ref = db.Column(db.Integer, db.ForeignKey('ref_doctors.doctor_id'))
     kmu_id_ref = db.Column(db.Integer, db.ForeignKey('ref_kmu.kmu_id'))
+    disease_id_ref = db.Column(db.Integer, db.ForeignKey('mkb10.id'))
 
 
 class RefKmu(db.Model, DatExtDB):
