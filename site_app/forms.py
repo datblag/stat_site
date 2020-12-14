@@ -1,4 +1,5 @@
-from wtforms.fields import StringField, SubmitField, DateField, FloatField, PasswordField, BooleanField, IntegerField
+from wtforms.fields import StringField, SubmitField, DateField, FloatField, PasswordField, BooleanField, IntegerField,\
+    SelectField
 from flask_wtf import FlaskForm
 from wtforms.widgets import TextArea
 from wtforms.validators import Length, NumberRange, InputRequired, DataRequired, ValidationError, Optional
@@ -170,6 +171,8 @@ class MedServiceEditForm(FlaskForm):
     service_date = DateField('Дата', id='ServiceDate',
                              validators=[InputRequired(message=u'Введите дату оказания услуги')])
     disease = StringField('Диагноз', id='disease_code', validators=[InputRequired(message=u'Заполните это поле')])
+
+    service_ref = SelectField('Услуга', id='ServiceRef', choices=[('1', 'one'), ('2', 'two'), ('3', 'three')])
 
     @staticmethod
     def validate_doctor_code(self, doctor_code):
