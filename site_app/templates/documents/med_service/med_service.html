@@ -1,0 +1,50 @@
+{% extends "base.html"%}
+{% import "_pagination.html" as macros %}
+        {% block title %}
+            Направления на МСЭ
+        {% endblock title %}
+
+{% block body %}
+{% endblock body %}
+
+{% block nav_documents %}active{% endblock nav_documents %}
+
+{% block row %}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Врач</th>
+      <th scope="col">Пациент</th>
+      <th scope="col">Дата</th>
+      <th scope="col">Услуга</th>
+      <th scope="col">Диагноз</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for service in services%}
+
+    <tr>
+      <td><a href="{{url_for('med_service_edit', service_id=service.service_id)}}">Изменить</a></td>
+      <td>{{service.doctor.doctor_name}}</a></td>
+      <td>{{service.patient}}</td>
+      <td>{{service.service_date|formatdate}}</td>
+      <td>{{service.kmu.kmu_name}}</td>
+      <td>{{service.disease.code}}</td>
+    </tr>
+    {% endfor%}
+
+
+  </tbody>
+</table>
+
+
+
+{% endblock row %}
+
+{% block body2 %}
+<div class="pagination">
+{{ macros.pagination_widget(pagination, '.mse_referral_list') }}
+</div>
+{% endblock %}
