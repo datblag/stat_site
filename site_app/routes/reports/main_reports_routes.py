@@ -50,6 +50,7 @@ def report_eln():
             conn = psycopg2.connect(sql_pg_eln)
         except psycopg2.Error as err:
             res_str = "Connection error: {}".format(err)
+            logging.warning(conn)
 
         prm_date_start = "'" + form.begin_date.data.strftime('%d.%m.%Y') + "'"
         prm_date_end_rep = "'" + prm_date_end_rep.strftime('%d.%m.%Y') + "'"
