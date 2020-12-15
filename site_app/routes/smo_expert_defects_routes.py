@@ -13,6 +13,7 @@ from site_app.decorators import admin_required, permission_required
 
 @app.route('/defect/', methods=['GET'])
 @login_required
+@permission_required(Permission.EXPERT)
 def defect_list():
     if 'patient_id' in session:
         session.pop('patient_id', None)

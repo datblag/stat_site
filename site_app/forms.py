@@ -105,14 +105,17 @@ class DefectDeleteForm(FlaskForm):
     pass
 
 
+class PeriodForm(FlaskForm):
+    begin_date = DateField('Период', id='BeginDate', validators=[InputRequired(message=u'Введите начало периода')])
+    end_date = DateField('', id='EndDate', validators=[InputRequired(message=u'Введите конец периода')])
+
+
 class MseReferralEditForm(FlaskForm):
     bureau_id = StringField('Филиал бюро МСЭ', id='bureau_id', validators=[InputRequired(message=u'Заполните это поле'),
                                                                          Length(min=1, max=1,
-                                                                         message=u'Необходимо ввести 1 символ')])
-
+                                                                                message=u'Необходимо ввести 1 символ')])
 
     bureau_label = StringField('', id='bureau_label')
-
 
     is_first_direction = BooleanField('Направлен первично', id='is_first_direction', default=False)
 

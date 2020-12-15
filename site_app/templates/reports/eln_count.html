@@ -1,0 +1,34 @@
+{% extends "base.html"%}
+        {% block title %}
+            Список отчетов
+        {% endblock title %}
+
+{% block body %}
+<form method="post" novalidate>
+
+    {{form.hidden_tag()}}
+
+   <br><br>
+
+    <div class="row">
+
+        <div class="col">
+         {{ form.begin_date.label }}
+        {{ form.begin_date(type="date", class="form-control")}}
+        {% for error in form.errors.begin_date %}
+                <span style="color: red;">[{{error}}]</span>
+        {% endfor %}<br><br>
+
+        {{ form.end_date(type="date", class="form-control")}}
+        {% for error in form.errors.end_date %}
+                <span style="color: red;">[{{error}}]</span>
+        {% endfor %}<br><br>
+        </div>
+
+
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Сформировать</button>
+</form>
+{% endblock body %}

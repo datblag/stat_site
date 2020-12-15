@@ -19,3 +19,5 @@ FLASKY_POSTS_PER_PAGE = 50
 sql_database_mis = {'sql_server': 'server host', 'sql_user': '', 'sql_password': '',
                     'sql_database': ''}
 
+sql_pg_eln = "dbname='' user='' host='' password=''"
+

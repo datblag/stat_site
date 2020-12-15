@@ -8,10 +8,13 @@ from site_app.models.reference import RefDoctors, Mkb10
 from site_app.models.main_tables import Patients
 from site_app import db
 from site_app.site_config import FLASKY_POSTS_PER_PAGE
+from site_app.models.authorization import Permission
+from site_app.decorators import permission_required
 
 
 @app.route('/med_service_edit/<int:service_id>', methods=['GET', 'POST'])
 @login_required
+@permission_required(Permission.MEDICAL_SERVICE)
 def med_service_edit(service_id=0):
     form = MedServiceEditForm(request.form)
 

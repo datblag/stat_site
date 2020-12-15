@@ -103,6 +103,7 @@ def mse_referral_edit(mse_id=0):
 
 @app.route('/mse_ref/', methods=['GET'])
 @login_required
+@permission_required(Permission.EXPERT)
 def mse_referral_list():
     if 'patient_id' in session:
         session.pop('patient_id', None)

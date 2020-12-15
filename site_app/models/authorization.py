@@ -12,6 +12,7 @@ class Permission:
     EXPERT = 1
     REPORT = 2
     ADMIN = 4
+    MEDICAL_SERVICE = 8
 
 
 class Role(db.Model):
