@@ -52,9 +52,10 @@ class MedicalServicesView(MyModelView):
     column_filters = ("service_date", "doctor", )
 
 
-admin.add_view(MyModelView(Patients, db.session))
 admin.add_view(MyModelView(User, db.session))
 admin.add_view(MyModelView(Role, db.session))
+admin.add_view(MyModelView(Patients, db.session))
+admin.add_view(MyModelView(RefKmu, db.session))
 admin.add_view(MedicalServicesView(MedicalServices, db.session))
 
 
