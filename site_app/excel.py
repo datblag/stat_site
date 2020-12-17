@@ -9,20 +9,20 @@ MAPPING_BY_YEAR = 0
 import logging
 
 
-def main():
-    path_name = r'S:\20201215_узи'
-    file_name = os.path.join(path_name, 'узи омс июнь.xlsx')
-    start_row = 2
-    start_row = start_row - 1  # нумерация с 0 !!!!!!!!!!!!!!!!!!
-    type_mapping_birthday = MAPPING_BY_DATE
+def set_patient_num_to_excel(path_name, file_name, start_row_num, type_mapping_birthday, fam_col_index, dr_col_index,
+                             result_col_index):
+    # start_row = 2
+    start_row = start_row_num - 1  # нумерация с 0 !!!!!!!!!!!!!!!!!!
+    # type_mapping_birthday = MAPPING_BY_DATE
 
-    fam_col = column_index_from_string('G')
-    dr_col = column_index_from_string('D')
-    result_col_history = column_index_from_string('H')
+    fam_col = column_index_from_string(fam_col_index)
+    dr_col = column_index_from_string(dr_col_index)
+    result_col_history = column_index_from_string(result_col_index)
 
     find_records_count = 0
 
-    wb = openpyxl.load_workbook(file_name)
+    file_full_name = os.path.join(path_name, file_name)
+    wb = openpyxl.load_workbook(file_full_name)
     ws = wb.active
 
     if ws.max_column <= result_col_history:
@@ -39,7 +39,7 @@ def main():
         fam_value = row[fam_col-1].value
         if fam_value is None:
             continue
-        print(fam_value)
+        logging.warning(fam_value)
         fio_list = fam_value.strip().split(' ', 1)
         if len(fio_list) > 1:
             fam = fio_list[0]
@@ -51,7 +51,7 @@ def main():
         else:
             continue
 
-        print(fam, im, ot)
+        logging.warning([fam, im, ot])
 
         query = session_mis.query(HltMkabTable.num)
         query = query.filter(func.rtrim(func.ltrim(HltMkabTable.family)) == fam.strip())
@@ -65,12 +65,20 @@ def main():
         elif type_mapping_birthday == MAPPING_BY_DATE:
             query = query.filter(HltMkabTable.date_bd == year_bird)
         recs = query.all()
-        print(recs)
+        logging.warning(recs)
         if recs:
             find_records_count += 1
             ws.cell(row_num, result_col_history).value = recs[0].num
-    print(find_records_count)
-    wb.save(file_name)
+    logging.warning(find_records_count)
+    wb.save(file_full_name)
+
+
+def main():
+
+    path_name = r'S:\20201215_узи'
+    file_name = 'узи омс июнь.xlsx'
+    set_patient_num_to_excel(path_name, file_name, 2, MAPPING_BY_DATE, 'G', 'D', 'H')
+
 
 
 if __name__ == '__main__':
