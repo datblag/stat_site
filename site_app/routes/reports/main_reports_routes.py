@@ -39,7 +39,7 @@ def report_eln():
                             copyfile=False, open_in_excel=False, sheet_title='Количество ЭЛН')
 
         tr.add_header_row(
-            'За период с ' + form.begin_date.data.strftime('%d.%m.%Y') +
+            'ЭЛН за период с ' + form.begin_date.data.strftime('%d.%m.%Y') +
             ' по ' + form.end_date.data.strftime('%d.%m.%Y'))
         tr.add_header_row('')
 
@@ -55,20 +55,24 @@ def report_eln():
         prm_date_start = "'" + form.begin_date.data.strftime('%d.%m.%Y') + "'"
         prm_date_end_rep = "'" + prm_date_end_rep.strftime('%d.%m.%Y') + "'"
 
-        sql = f'SELECT ln_date FROM public.fc_eln_data_history where (ln_date>={prm_date_start}) and (ln_date<{prm_date_end_rep})' \
-            f' order by ln_date desc'
+        sql = f'SELECT reason1, count(*) as cnt FROM public.fc_eln_data_history where (ln_date>={prm_date_start}) '\
+              f'and (ln_date<{prm_date_end_rep}) group by reason1 order by reason1'
         logging.warning(sql)
+        tr.add_titles_row([['Причина выдачи', 20], ['Количество', 8]])
+        # tr.current_line -= 1
+        sum_cnt = 0
         try:
             cur = conn.cursor()
             cur.execute(sql)
             data = cur.fetchall()
-            res_count = len(data)
+            # res_count = len(data)
+            for row in data:
+                tr.add_data_row([[row[0], row[1]]])
+                sum_cnt += row[1]
+            tr.add_data_row([['Итого', sum_cnt]])
         except psycopg2.Error as err:
             res_str = "Query error: {}".format(err)
-
-        tr.add_titles_row([['', 20], ['', 8]])
-        tr.current_line -= 1
-        tr.add_data_row([[res_str, res_count]])
+            tr.add_data_row([[res_str, res_count]])
         tr.close_template_file()
 
         return send_file(os.path.join('files', file_name), as_attachment=True, mimetype='application/vnd.ms-excel',

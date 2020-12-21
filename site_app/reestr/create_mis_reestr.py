@@ -5,7 +5,7 @@ from sqlalchemy import func
 
 
 def main():
-
+    # установка параметров
     date = datetime.date(2020, 7, 23)  # поздноподанные с даты
     datebegin = datetime.date(2020, 8, 23)
     dateend = datetime.date(2020, 9, 22)
