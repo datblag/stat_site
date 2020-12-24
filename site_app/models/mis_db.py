@@ -82,6 +82,7 @@ class XUserSettings(BaseMis):
     property = Column(VARCHAR(50))
 
     def get_ogrn(self):
+        # host code: SELECT ValueStr FROM x_UserSettings WHERE Property = 'ОГРН поликлиники'
         return session_mis.query(XUserSettings).filter(XUserSettings.property == 'ОГРН поликлиники').all()[0].valuestr
 
 
@@ -94,8 +95,14 @@ class OmsLpu(BaseMis):
     rf_okatoid = Column(INT, ForeignKey('oms_okato.okatoid'))
 
     def get_lpuid(self, c_ogrn=''):
+        # host code: SELECT ISNULL(MIN(LPUID), 0) FROM oms_LPU WHERE C_OGRN = '@C_OGRN' AND StLPU = '1';
         select = session_mis.query(func.isnull(func.min(OmsLpu.lpuid), 0).label('lpuid'))
         return select.filter(OmsLpu.c_ogrn == c_ogrn).filter(OmsLpu.stlpu == '1').all()[0].lpuid
+
+    def get_okato(self, lpuid=''):
+        # host code: SELECT TOP(1) LEFT(C_OKATO, 2) + '000' FROM oms_OKATO LEFT  JOIN oms_LPU ON  rf_OKATOID = OKATOID
+        # WHERE LPUID = @LPUID  ;
+        return session_mis.query(OmsLpu).get(lpuid).okato.c_okato[0:2] + '000'
 
 
 class OmsOkato(BaseMis):
@@ -105,6 +112,7 @@ class OmsOkato(BaseMis):
     oms_stf = relationship('OmsStf', backref='okato', lazy='dynamic')
     c_okato = Column(VARCHAR(15))
 
+    # host code: SELECT ISNULL(MIN(OKATOID), 0) FROM oms_OKATO WHERE C_OKATO = '@C_OKATO';
     def get_okatoid(self, c_okato):
         return session_mis.query(OmsOkato.okatoid).filter(OmsOkato.c_okato == c_okato).all()[0].okatoid
 
