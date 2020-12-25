@@ -2,7 +2,7 @@ from site_app.site_config import sql_database_mis
 from sqlalchemy import create_engine, MetaData, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
-from sqlalchemy import Column, VARCHAR, INT, DATE, func
+from sqlalchemy import Column, VARCHAR, INT, DATE, BOOLEAN, func
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -51,8 +51,13 @@ class OmsDepartmentTable(BaseMis):
 class HltTapTable(BaseMis):
     __tablename__ = 'hlt_tap'
     tapid = Column(INT, primary_key=True)
-    rf_DepartmentID = Column(INT, ForeignKey('oms_department.departmentid'))
-    rf_kl_DDServiceID = Column(INT)
+    rf_departmentid = Column(INT, ForeignKey('oms_department.departmentid'))
+    rf_kl_ddserviceid = Column(INT)
+    rf_mkabid = Column(INT)
+    isclosed = Column(BOOLEAN)
+    rf_kl_profittypeid = Column(INT)
+    dateclose = Column(DATE)
+    rf_onco_signid = Column(INT)
 
 
 # классификатор услуг для дополнительной диспансеризации
@@ -61,6 +66,7 @@ class OmsKlDdServiceTable(BaseMis):
     kl_ddserviceid = Column(INT, primary_key=True)
     code = Column(VARCHAR(50))
     name = Column(VARCHAR(255))
+    date_e = Column(DATE)
 
     @hybrid_property
     def simple(self):
