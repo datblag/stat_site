@@ -40,6 +40,10 @@ class OmsDepartmentTable(BaseMis):
     rf_kl_departmenttypeid = Column(INT)
     tap_list = relationship('HltTapTable', backref='department', lazy='dynamic')
 
+    def get_tmp_department(self, session):
+        return session.query(self.departmentid.label('departmentid'),
+                             self.rf_lpuid.label('rf_lpuid')).filter(self.rf_kl_departmenttypeid == 3)
+
     def department_list(self, session):
         return session.query(self).filter(self.rf_kl_departmenttypeid == 3)
 

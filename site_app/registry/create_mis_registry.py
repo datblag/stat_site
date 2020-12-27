@@ -38,10 +38,12 @@ class MisRegistry:
         self.reestrstt = ''.join(['[', 'tmpdts', uuid.uuid4().hex, ']'])
 
     def get_temp_tap(self):
-        query = mis_db.session_mis.query(self.mis_db.OmsDepartmentTable.departmentid.label('departmentid'),
-                                         self.mis_db.OmsDepartmentTable.rf_lpuid.label('lpuid'),
-                                         self.mis_db.OmsKlDdServiceTable.code.label('code'),
-                                         func.sign(self.mis_db.HltTapTable.rf_onco_signid).label('rf_onco_signid'))
+
+        query = self.mis_db.OmsDepartmentTable.get_tmp_department(self.mis_db.OmsDepartmentTable,
+                                                                  mis_db.session_mis)
+
+        query = query.add_columns(self.mis_db.OmsKlDdServiceTable.code.label('code'),
+                                  func.sign(self.mis_db.HltTapTable.rf_onco_signid).label('rf_onco_signid'))
         query = query.join(self.mis_db.HltTapTable, self.mis_db.OmsDepartmentTable.departmentid ==
                            self.mis_db.HltTapTable.rf_departmentid)
         query = query.join(self.mis_db.OmsKlDdServiceTable, self.mis_db.HltTapTable.rf_kl_ddserviceid ==
@@ -54,9 +56,23 @@ class MisRegistry:
         query = query.filter(self.mis_db.HltTapTable.dateclose.between(self.date_begin, self.date_end))
         query = query.filter(self.mis_db.OmsKlDdServiceTable.date_e > self.mis_db.HltTapTable.dateclose)
 
+        return query
 
+    def get_temp_tap_h(self):
+        query = self.get_temp_tap();
+        query = query.filter(self.mis_db.HltTapTable.rf_kl_ddserviceid == 0)
+        query = query.filter(func.sign(self.mis_db.HltTapTable.rf_onco_signid) == 0)
+        return query
 
+    def get_temp_tap_dd(self):
+        query = self.get_temp_tap();
+        query = query.filter(self.mis_db.HltTapTable.rf_kl_ddserviceid > 0)
+        return query
 
+    def get_temp_tap_onko(self):
+        query = self.get_temp_tap();
+        query = query.filter(self.mis_db.HltTapTable.rf_kl_ddserviceid == 0)
+        query = query.filter(func.sign(self.mis_db.HltTapTable.rf_onco_signid) == 1)
         return query
 
     def process_registry_by_type(self, reg_type):
@@ -103,7 +119,7 @@ def main():
     logging.warning(['stfid', current_registry.stfid])
     logging.warning(['reestrhlt', current_registry.reestrhlt])
     logging.warning(['reestrstt', current_registry.reestrstt])
-    logging.warning(current_registry.get_temp_tap())
+    logging.warning(current_registry.get_temp_tap_onko())
     #
     # # tmp_department = session_mis.query(OmsDepartmentTable.departmentid, OmsDepartmentTable.rf_lpuid).\
     # #     filter(OmsDepartmentTable.rf_kl_departmenttypeid == 3)
