@@ -4,7 +4,7 @@ from sqlalchemy.sql.functions import min
 from site_app.models import mis_db
 import logging
 import datetime
-from sqlalchemy import func
+from sqlalchemy import func, and_
 import uuid
 
 
@@ -29,12 +29,12 @@ class MisRegistry:
         self.date_begin = date_begin
         self.date_end = date_end
         self.mis_db = mis_db
-        self.c_ogrn = self.mis_db.XUserSettings().get_ogrn()
-        self.lpuid = self.mis_db.OmsLpu.get_lpuid(self.mis_db.OmsLpu, c_ogrn=self.c_ogrn)
-        self.c_okato = self.mis_db.OmsLpu.get_okato(self.mis_db.OmsLpu, lpuid=self.lpuid)
-        self.okatoid = self.mis_db.OmsOkato.get_okatoid(self.mis_db.OmsOkato, c_okato=self.c_okato)
-        self.stfid = self.mis_db.session_mis.query(self.mis_db.OmsStf).filter(self.mis_db.OmsStf.rf_okato ==
-                                                                    self.okatoid).all()[0].stfid
+        self.c_ogrn = self.mis_db.XUserSettingsTable().get_ogrn()
+        self.lpuid = self.mis_db.OmsLpuTable.get_lpuid(self.mis_db.OmsLpuTable, c_ogrn=self.c_ogrn)
+        self.c_okato = self.mis_db.OmsLpuTable.get_okato(self.mis_db.OmsLpuTable, lpuid=self.lpuid)
+        self.okatoid = self.mis_db.OmsOkatoTable.get_okatoid(self.mis_db.OmsOkatoTable, c_okato=self.c_okato)
+        self.stfid = self.mis_db.session_mis.query(self.mis_db.OmsStfTable).filter(self.mis_db.OmsStfTable.rf_okato ==
+                                                                                   self.okatoid).all()[0].stfid
 
         # mis code: SELECT  '[tmpdts' +	REPLACE(LOWER(CONVERT(VARCHAR(36), NEWID())), '-', '') +	']';
         self.reestrhlt = ''.join(['[', 'tmpdts', uuid.uuid4().hex, ']'])
@@ -69,32 +69,55 @@ class MisRegistry:
         return query
 
     def get_temp_tap_h(self):
-        query = self.get_temp_tap();
+        query = self.get_temp_tap()
         query = query.filter(self.mis_db.HltTapTable.rf_kl_ddserviceid == 0)
         query = query.filter(func.sign(self.mis_db.HltTapTable.rf_onco_signid) == 0)
         return query
 
     def get_temp_tap_dd(self):
-        query = self.get_temp_tap();
+        query = self.get_temp_tap()
         query = query.filter(self.mis_db.HltTapTable.rf_kl_ddserviceid > 0)
         return query
 
     def get_temp_tap_onko(self):
-        query = self.get_temp_tap();
+        query = self.get_temp_tap()
         query = query.filter(self.mis_db.HltTapTable.rf_kl_ddserviceid == 0)
         query = query.filter(func.sign(self.mis_db.HltTapTable.rf_onco_signid) == 1)
         return query
 
-    def process_registry_by_type(self, reg_type):
-        pass
+    def get_reestrhlt(self):
+        # выбираем услуги для реестра
+        # cte() subquery()
+        query = self.temp_tap
+        query = query.join(self.mis_db.HltSmTapTable, self.mis_db.HltTapTable.tapid ==
+                           self.mis_db.HltSmTapTable.rf_tapid, isouter=True)
+        query = query.join(self.mis_db.HltReestrMhSmTapTable, and_(self.mis_db.HltReestrMhSmTapTable.rf_smtapid ==
+                                                                   self.mis_db.HltSmTapTable.smtapid,
+                                                                   self.mis_db.HltReestrMhSmTapTable.rf_reestrmhid > 0),
+                           isouter=True)
+        query = query.join(self.mis_db.OmsServiceMedicalTable, self.mis_db.OmsServiceMedicalTable.servicemedicalid ==
+                           self.mis_db.HltSmTapTable.rf_omsservicemedicalid,
+                           isouter=True)
+
+        query = query.filter(self.mis_db.HltSmTapTable.count > 0)
+        query = query.filter(self.mis_db.HltSmTapTable.flagbill == 1)
+        query = query.filter(self.mis_db.HltReestrMhSmTapTable.rf_smtapid == None)
+        query = query.add_columns(self.mis_db.HltSmTapTable.smtapid.label('smtapid'),
+                                  self.mis_db.HltSmTapTable.rf_tapid.label('rf_tapid'),
+                                  self.mis_db.HltSmTapTable.count.label('count'),
+                                  self.mis_db.HltSmTapTable.date_p.label('date_p'),
+                                  self.mis_db.HltSmTapTable.flagcomplete.label('flagcomplete'),
+                                  self.mis_db.HltSmTapTable.flagpay.label('flagpay'),
+                                  self.mis_db.OmsServiceMedicalTable.iscomplex.label('iscomplex'))
+        return query
 
 
 def main():
     # установка параметров
     date_old = datetime.date(2020, 7, 23) # поздноподанные с даты
     date = datetime.date(2020, 7, 23)
-    date_begin = datetime.date(2020, 8, 23)
-    date_end = datetime.date(2020, 9, 22)
+    date_begin = datetime.date(2020, 11, 23)
+    date_end = datetime.date(2020, 12, 23)
 
     # registry_type: 0 - основной, 1 - ДД, 2 - ВМП, 3 - ОНКО
     current_registry = MisRegistry(date_old=date_old, date_begin=date_begin, date_end=date_end, mis_db=mis_db,
@@ -130,7 +153,9 @@ def main():
     logging.warning(['stfid', current_registry.stfid])
     logging.warning(['reestrhlt', current_registry.reestrhlt])
     logging.warning(['reestrstt', current_registry.reestrstt])
-    logging.warning(current_registry.temp_tap)
+    # logging.warning(current_registry.temp_tap)
+    logging.warning(current_registry.get_reestrhlt())
+
     #
     # # tmp_department = session_mis.query(OmsDepartmentTable.departmentid, OmsDepartmentTable.rf_lpuid).\
     # #     filter(OmsDepartmentTable.rf_kl_departmenttypeid == 3)
