@@ -20,8 +20,11 @@ class MisRegistry:
     stfid = None
     reestrhlt = None
     reestrstt = None
+    registry_type = None
+    temp_tap = None
 
-    def __init__(self, date_old, date_begin, date_end, mis_db):
+    def __init__(self, date_old, date_begin, date_end, mis_db, registry_type):
+        # registry_type: 0 основной (заболевания), 1 дд, 3 онко
         self.date_old = date_old
         self.date_begin = date_begin
         self.date_end = date_end
@@ -36,6 +39,13 @@ class MisRegistry:
         # mis code: SELECT  '[tmpdts' +	REPLACE(LOWER(CONVERT(VARCHAR(36), NEWID())), '-', '') +	']';
         self.reestrhlt = ''.join(['[', 'tmpdts', uuid.uuid4().hex, ']'])
         self.reestrstt = ''.join(['[', 'tmpdts', uuid.uuid4().hex, ']'])
+        self.registry_type = registry_type
+        if registry_type == 0:
+            self.temp_tap = self.get_temp_tap_h()
+        elif registry_type == 1:
+            self.temp_tap = self.get_temp_tap_dd()
+        elif registry_type == 3:
+            self.temp_tap = self.get_temp_tap_onko()
 
     def get_temp_tap(self):
 
@@ -86,21 +96,22 @@ def main():
     date_begin = datetime.date(2020, 8, 23)
     date_end = datetime.date(2020, 9, 22)
 
-    current_registry = MisRegistry(date_old=date_old, date_begin=date_begin, date_end=date_end, mis_db=mis_db)
+    # registry_type: 0 - основной, 1 - ДД, 2 - ВМП, 3 - ОНКО
+    current_registry = MisRegistry(date_old=date_old, date_begin=date_begin, date_end=date_end, mis_db=mis_db,
+                                   registry_type=0)
     logging.warning(current_registry.date_old)
 
-    reg_type = 0  # 0 - основной, 1 - ДД, 2 - ВМП, 3 - ОНКО
     dd = 0
-    if reg_type == 1:
-        dd = 1
-
-    hmp = 0
-    if reg_type == 2:
-        hmp = 1
-
-    onco = 0
-    if reg_type == 3:
-        onco = 1
+    # if reg_type == 1:
+    #     dd = 1
+    #
+    # hmp = 0
+    # if reg_type == 2:
+    #     hmp = 1
+    #
+    # onco = 0
+    # if reg_type == 3:
+    #     onco = 1
 
     # c_ogrn = XUserSettings().get_ogrn()
     logging.warning(['ОГРН', current_registry.c_ogrn])
@@ -119,7 +130,7 @@ def main():
     logging.warning(['stfid', current_registry.stfid])
     logging.warning(['reestrhlt', current_registry.reestrhlt])
     logging.warning(['reestrstt', current_registry.reestrstt])
-    logging.warning(current_registry.get_temp_tap_onko())
+    logging.warning(current_registry.temp_tap)
     #
     # # tmp_department = session_mis.query(OmsDepartmentTable.departmentid, OmsDepartmentTable.rf_lpuid).\
     # #     filter(OmsDepartmentTable.rf_kl_departmenttypeid == 3)
