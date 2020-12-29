@@ -15,5 +15,5 @@ while True:
     cur.execute('''update fc_eln_data_history set employer = '.', empl_flag=1 where employer is null''')
     conn.commit()
     logging.warning('update')
-    time.sleep(10)
+    time.sleep(1)
 

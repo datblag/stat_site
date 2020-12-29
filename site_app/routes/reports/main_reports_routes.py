@@ -12,6 +12,8 @@ import datetime
 import psycopg2
 from site_app.site_config import sql_pg_eln
 from site_app.decorators import permission_required
+from site_app.models.mis_db import HltMkabTable, session_mis
+
 
 @app.route('/reports/', methods=['GET'])
 @login_required
@@ -89,13 +91,17 @@ def report_mse_referral():
     file_full_name = os.path.join(os.getcwd(), 'site_app', 'files', file_name)
     tr = TemplateRender(25, file_name=file_full_name,
                         copyfile=False, open_in_excel=False, sheet_title='Список')
-    tr.add_titles_row([['№ карты', 10], ['Фамилия', 20], ['Имя', 20], ['Отчество', 20], ['ДР', 20], ['Бюро МСЭ', 20],
+    tr.add_titles_row([['№ карты', 10], ['Фамилия', 20], ['Имя', 20], ['Отчество', 20], ['ДР', 20], ['Возраст', 20],
+                       ['Пол', 10], ['Бюро МСЭ', 20],
                        ['Установлена впервые', 20], ['Не устанволена', 20], ['Бессрочно', 20], ['Дата явки', 20],
                        ['% потери трудоспособности', 20], ['Группа', 20], ['Диагноз', 20], ['Врач', 20],
                        ['Дата экспертизы', 20], ['Примечание', 70]])
     for referral in query:
+
         tr.add_data_row([[referral.patient.num, referral.patient.fam, referral.patient.im, referral.patient.ot,
-                          referral.patient.birthday, str(referral.bureau), referral.is_first_direction,
+                          referral.patient.birthday, referral.patient.get_age(),
+                          session_mis.query(HltMkabTable).get(referral.patient.mis_id).w,
+                          str(referral.bureau), referral.is_first_direction,
                           referral.is_disability_no_set, referral.is_set_indefinitely, referral.next_date,
                           referral.degree_disability,
                           str(referral.disability_group) if referral.disability_group is not None else '',

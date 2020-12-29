@@ -26,6 +26,7 @@ class HltMkabTable(BaseMis):
     ot = Column(VARCHAR(40))
     date_bd = Column(DATE)
     num = Column(VARCHAR(40))
+    w = Column(INT)
 
     def __repr__(self):
         return '<{} {} {} {}>'.format(self.family, self.name, self.ot, self.date_bd)
