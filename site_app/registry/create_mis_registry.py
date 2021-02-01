@@ -49,6 +49,7 @@ class MisRegistry:
 
     def get_temp_tap(self):
 
+        # выбираем список амбулаторных(rf_kl_DepartmentTypeID=3)  отделений в курсор tmp_Department
         query = self.mis_db.OmsDepartmentTable.get_tmp_department(self.mis_db.OmsDepartmentTable,
                                                                   mis_db.session_mis)
 
@@ -59,7 +60,6 @@ class MisRegistry:
         query = query.join(self.mis_db.OmsKlDdServiceTable, self.mis_db.HltTapTable.rf_kl_ddserviceid ==
                            self.mis_db.OmsKlDdServiceTable.kl_ddserviceid)
 
-        query = query.filter(self.mis_db.OmsDepartmentTable.rf_kl_departmenttypeid == 3)
         query = query.filter(self.mis_db.HltTapTable.rf_mkabid > 0)
         query = query.filter(self.mis_db.HltTapTable.isclosed == 1)
         query = query.filter(self.mis_db.HltTapTable.rf_kl_profittypeid == 3)
@@ -88,7 +88,7 @@ class MisRegistry:
     def get_reestrhlt(self):
         # выбираем услуги для реестра
         # cte() subquery()
-        query = self.temp_tap
+        query = self.temp_tap  # TODO не реализовали логику для поля EnumName
         query = query.join(self.mis_db.HltSmTapTable, self.mis_db.HltTapTable.tapid ==
                            self.mis_db.HltSmTapTable.rf_tapid, isouter=True)
         query = query.join(self.mis_db.HltReestrMhSmTapTable, and_(self.mis_db.HltReestrMhSmTapTable.rf_smtapid ==
@@ -118,6 +118,7 @@ def main():
     date = datetime.date(2020, 7, 23)
     date_begin = datetime.date(2020, 11, 23)
     date_end = datetime.date(2020, 12, 23)
+    REPORT_PERIOD_ID = 19  # идентификатор периода реестра из таблицы hlt_ReportPeriod
 
     # registry_type: 0 - основной, 1 - ДД, 2 - ВМП, 3 - ОНКО
     current_registry = MisRegistry(date_old=date_old, date_begin=date_begin, date_end=date_end, mis_db=mis_db,
@@ -163,7 +164,7 @@ def main():
     # # OmsDepartmentTable.department_list(OmsDepartmentTable, session_mis)
     #
     # # rows = session_mis.query(HltTapTable, OmsKlDdServiceTable).join(OmsKlDdServiceTable,
-    # #                                            HltTapTable.rf_kl_DDServiceID == OmsKlDdServiceTable.kl_ddserviceid).filter(OmsKlDdServiceTable.simple == 100).limit(10).all()
+    # # HltTapTable.rf_kl_DDServiceID == OmsKlDdServiceTable.kl_ddserviceid).filter(OmsKlDdServiceTable.simple == 100).limit(10).all()
     # # for row in rows:
     # #     logging.warning(row)
 

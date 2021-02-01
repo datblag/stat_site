@@ -10,7 +10,7 @@ import logging
 
 
 def set_patient_num_to_excel(path_name, file_name, start_row_num, type_mapping_birthday, fam_col_index, dr_col_index,
-                             result_col_index, worksheet_num=1):
+                             result_col_index, worksheet_num=1, field_name='num'):
     # start_row = 2
     start_row = start_row_num - 1  # нумерация с 0 !!!!!!!!!!!!!!!!!!
     # type_mapping_birthday = MAPPING_BY_DATE
@@ -68,7 +68,7 @@ def set_patient_num_to_excel(path_name, file_name, start_row_num, type_mapping_b
 
         logging.warning([fam, im, ot])
 
-        query = session_mis.query(HltMkabTable.num)
+        query = session_mis.query(HltMkabTable.num.label('num'), HltMkabTable.ss.label('ss'))
         query = query.filter(func.rtrim(func.ltrim(HltMkabTable.family)) == fam.strip())
         query = query.filter(func.rtrim(func.ltrim(HltMkabTable.name)) == im.strip())
         if ot is not None:
@@ -78,21 +78,29 @@ def set_patient_num_to_excel(path_name, file_name, start_row_num, type_mapping_b
             query = query.filter(HltMkabTable.date_bd >= datetime.date(year=year_bird, month=1, day=1))
             query = query.filter(HltMkabTable.date_bd <= datetime.date(year=year_bird, month=12, day=31))
         elif type_mapping_birthday == MAPPING_BY_DATE:
-            query = query.filter(HltMkabTable.date_bd == year_bird)
+            if isinstance(year_bird, str):
+                year_bird = datetime.datetime.strptime(year_bird, '%d.%m.%Y')
+            if isinstance(year_bird, datetime.datetime):
+                query = query.filter(HltMkabTable.date_bd == year_bird)
+            else:
+                logging.error('Ошибка в дате рождения, поиск не выполнен')
+                continue
         recs = query.all()
         logging.warning(recs)
         if recs:
             find_records_count += 1
-            ws.cell(row_num, result_col_history).value = recs[0].num
+            ws.cell(row_num, result_col_history).value = recs[0][recs[0]._fields.index(field_name)]
     logging.warning(find_records_count)
     wb.save(file_full_name)
 
 
 def main():
 
-    path_name = r'S:\20201215_узи'
-    file_name = 'узи омс июнь.xlsx'
-    set_patient_num_to_excel(path_name, file_name, 2, MAPPING_BY_DATE, ['A', 'B', 'C'], 'D', 'H')
+    path_name = r'S:\20210131_орлова сверка пневмонии'
+    file_name = 'пневмонии сверка список 2.xlsx'
+    set_patient_num_to_excel(path_name, file_name, start_row_num=2, type_mapping_birthday=MAPPING_BY_DATE,
+                             fam_col_index='C', dr_col_index='E', result_col_index='B', worksheet_num=1,
+                             field_name='num')
 
 
 if __name__ == '__main__':

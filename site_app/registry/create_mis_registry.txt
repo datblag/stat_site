@@ -1,0 +1,58 @@
+Поликлиника
+
+    Подготовка данных
+
+        выбираем список амбулаторных (rf_kl_DepartmentTypeID = 3) отделений в курсор tmp_Department
+        SELECT DepartmentID, rf_LPUID FROM oms_Department WHERE rf_kl_DepartmentTypeID = 3
+
+
+        выбираем список тапов в курсор tmp_TAP процедура get_temp_tap, таблицы: tmp_Department, hlt_TAP (ТАПы),
+            oms_kl_DDService
+        left join hlt_TAP.rf_DepartmentID = tmp_Department.DepartmentID по коду отделения
+        left join hlt_TAP.rf_kl_DDServiceID = oms_kl_DDService.kl_DDServiceID определяем тип дополнительной
+                            диспансеризации, если rf_kl_DDServiceID 0 или не указан, то не дд
+        условия:
+                rf_MKABID > 0 в тапе указана карта пациента
+                IsClosed = 1 тап закрыт
+                rf_kl_ProfitTypeID = 3 тип оплаты в ТАП - ОМС
+                DateClose BETWEEN '@DateBegin' AND '@DateEnd' - дата закрытия ТАП попадает в период
+                Date_E > DateClose - вид ДД действует на дату закрытия ТАПа
+                дополнительно для реестра по ДД: rf_kl_DDServiceID > 0 AND @DD = 1,
+                    процедура get_temp_tap_dd
+                дополнительно для онко реестра: rf_kl_DDServiceID = 0 AND SIGN(rf_onco_SignID) = @ONCO AND @DD|@HMP = 0,
+                    процедура get_temp_tap_onko
+                для общего реестра будет условие rf_kl_DDServiceID = 0 AND SIGN(rf_onco_SignID) = 0,
+                    процедура get_temp_tap_h
+        не реализовали логику для поля EnumName:
+		CASE
+            oms_kl_DDService.CODE
+            WHEN 'ОПВ' THEN '53'
+            WHEN 'ДВ2' THEN '52'
+            WHEN 'ДВ4' THEN '51'
+            WHEN 'ДС1' THEN '54'
+            WHEN 'ДС2' THEN '56'
+            WHEN 'ДС3' THEN '55'
+            WHEN 'ДС4' THEN '57'
+            WHEN 'ПН1' THEN '58'
+            ELSE ''
+        END
+        +
+        CASE
+            @ONCO
+            WHEN 1 THEN '67'
+            ELSE ''
+        END
+
+
+        выбираем услуги по ранее выбранным ТАПам в курсор ReestrHLT процедура get_reestrhlt, таблицы: tmp_TAP,
+            oms_ServiceMedical, hlt_SMTAP, hlt_ReestrMHSMTAP
+
+
+идентификатор периода (ИдПериод): идентификатор текущего отчетного периода, таблица hlt_ReportPeriod поле ReportPeriodID
+дата начала периода (ДатаНачПериода): дата начала отчетного периода, таблица hlt_ReportPeriod поле DateBegin
+
+порядковый номер случая поликлиники (n_zsl):
+    SELECT ISNULL(MAX(Num), 0) FROM hlt_ReestrTAPMH (NOLOCK) WHERE rf_ReportPeriodID = ИдПериод
+
+порядковый номер услуги поликлиники (n_usl):
+    SELECT ISNULL(MAX(Num), 0) FROM hlt_ReestrMHSMTAP (NOLOCK) WHERE rf_ReportPeriodID = ИдПериод

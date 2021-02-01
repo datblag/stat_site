@@ -25,6 +25,7 @@ class HltMkabTable(BaseMis):
     name = Column(VARCHAR(40))
     ot = Column(VARCHAR(40))
     date_bd = Column(DATE)
+    ss = Column(VARCHAR(14))
     num = Column(VARCHAR(40))
     w = Column(INT)
 
