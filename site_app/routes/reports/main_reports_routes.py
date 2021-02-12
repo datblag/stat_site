@@ -9,10 +9,9 @@ import os
 import uuid
 import logging
 import datetime
-import psycopg2
-from site_app.site_config import sql_pg_eln
 from site_app.decorators import permission_required
 from site_app.models.mis_db import HltMkabTable, session_mis
+from site_app.reports.fss_eln import eln_count_for_period
 
 
 @app.route('/reports/', methods=['GET'])
@@ -25,7 +24,6 @@ def reports_list():
 def report_eln():
     form = PeriodForm()
     if request.method == 'POST' and form.validate_on_submit():
-        tr = None
 
         # prm_date_end_rep = (datetime.datetime.strptime(form.begin_date.data, '%Y-%m-%d') +
         #                     datetime.timedelta(days=1)).strftime('%Y-%m-%d')
@@ -35,47 +33,8 @@ def report_eln():
         logging.warning(form.begin_date.data)
         logging.warning(prm_date_end_rep)
 
-        file_name = str(uuid.uuid4()) + '.xlsx'
-        file_full_name = os.path.join(os.getcwd(), 'site_app', 'files', file_name)
-        tr = TemplateRender(3, file_name=file_full_name,
-                            copyfile=False, open_in_excel=False, sheet_title='Количество ЭЛН')
-
-        tr.add_header_row(
-            'ЭЛН за период с ' + form.begin_date.data.strftime('%d.%m.%Y') +
-            ' по ' + form.end_date.data.strftime('%d.%m.%Y'))
-        tr.add_header_row('')
-
-        res_str = 'Выписано ЭЛН'
-        res_count = 0
-
-        try:
-            conn = psycopg2.connect(sql_pg_eln)
-        except psycopg2.Error as err:
-            res_str = "Connection error: {}".format(err)
-            logging.warning(conn)
-
-        prm_date_start = "'" + form.begin_date.data.strftime('%d.%m.%Y') + "'"
-        prm_date_end_rep = "'" + prm_date_end_rep.strftime('%d.%m.%Y') + "'"
-
-        sql = f'SELECT reason1, count(*) as cnt FROM public.fc_eln_data_history where (ln_date>={prm_date_start}) '\
-              f'and (ln_date<{prm_date_end_rep}) group by reason1 order by reason1'
-        logging.warning(sql)
-        tr.add_titles_row([['Причина выдачи', 20], ['Количество', 8]])
-        # tr.current_line -= 1
-        sum_cnt = 0
-        try:
-            cur = conn.cursor()
-            cur.execute(sql)
-            data = cur.fetchall()
-            # res_count = len(data)
-            for row in data:
-                tr.add_data_row([[row[0], row[1]]])
-                sum_cnt += row[1]
-            tr.add_data_row([['Итого', sum_cnt]])
-        except psycopg2.Error as err:
-            res_str = "Query error: {}".format(err)
-            tr.add_data_row([[res_str, res_count]])
-        tr.close_template_file()
+        (data, file_name) = eln_count_for_period(date_start=form.begin_date.data,
+                                                 date_end=form.end_date.data, file_genarate=True)
 
         return send_file(os.path.join('files', file_name), as_attachment=True, mimetype='application/vnd.ms-excel',
                          attachment_filename="выписано элн.xlsx")
