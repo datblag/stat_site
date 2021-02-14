@@ -33,6 +33,21 @@ class HltMkabTable(BaseMis):
         return '<{} {} {} {}>'.format(self.family, self.name, self.ot, self.date_bd)
 
 
+# должности
+class HltDocPrvdTable(BaseMis):
+    __tablename__ = 'hlt_docprvd'
+    docprvdid = Column(INT, primary_key=True)
+    name = Column(VARCHAR(100))
+
+
+# mkb10
+class OmsMkbTable(BaseMis):
+    __tablename__ = 'oms_mkb'
+    mkbid = Column(INT, primary_key=True)
+    ds = Column(VARCHAR(10))
+    name = Column(VARCHAR(255))
+
+
 # отделения
 class OmsDepartmentTable(BaseMis):
     __tablename__ = 'oms_department'
@@ -53,6 +68,17 @@ class OmsDepartmentTable(BaseMis):
         return '<{}>'.format(self.departmentname)
 
 
+# врачи
+class HltLpuDoctorTable(BaseMis):
+    __tablename__ = 'hlt_lpudoctor'
+    lpudoctorid = Column(INT, primary_key=True)
+    fam_v = Column(VARCHAR(30))
+    im_v = Column(VARCHAR(30))
+    ot_v = Column(VARCHAR(30))
+    rf_DepartmentID = Column(INT, ForeignKey("oms_department.departmentid"))
+    # department_name = relationship("OmsDepartment", foreign_keys=[rf_DepartmentID])
+
+
 # случаи заболеваний
 class HltTapTable(BaseMis):
     __tablename__ = 'hlt_tap'
@@ -64,6 +90,11 @@ class HltTapTable(BaseMis):
     rf_kl_profittypeid = Column(INT)
     dateclose = Column(DATE)
     rf_onco_signid = Column(INT)
+    rf_lpudoctorid = Column(
+            INT,
+            ForeignKey('hlt_lpudoctor.lpudoctorid'))
+    rf_docprvdid = Column(INT)
+    rf_mkbid = Column(INT)
 
 
 # оказанные усдуги
