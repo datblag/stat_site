@@ -103,11 +103,15 @@ class HltSmTapTable(BaseMis):
     smtapid = Column(INT, primary_key=True)
     rf_tapid = Column(INT)
     rf_omsservicemedicalid  = Column(INT)
+    rf_docprvdid = Column(INT)
     count = Column(DECIMAL(9, 2))
     date_p = Column(DATE)
     flagcomplete = Column(INT)
     flagpay = Column(INT)
     flagbill = Column(INT)
+    rf_lpudoctorid = Column(
+            INT,
+            ForeignKey('hlt_lpudoctor.lpudoctorid'))
 
 
 # оказанные усдуги вощедшие в реестр
