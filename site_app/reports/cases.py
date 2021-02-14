@@ -5,6 +5,8 @@ from sqlalchemy.types import NUMERIC
 import logging
 import datetime
 from site_app.template_render import TemplateRender
+import uuid
+import os
 
 
 def get_close_tap_list_by_close_doctor(prm_date_start, prm_date_end):
@@ -89,7 +91,7 @@ def rep_case_get_list(prm_date_start=None, prm_date_end=None):
     # query = query.filter(HltTapTable.dateclose <= date_end)
     # query = query.filter(HltTapTable.tapid.in_(query_smtap))
     query = query.order_by(HltLpuDoctorTable.fam_v, HltLpuDoctorTable.im_v, HltLpuDoctorTable.ot_v, HltMkabTable.num)
-    return query.all()
+    return query
 
 
 def rep_case(prm_date_start=None, prm_date_end=None, prm_copy_files=None, prm_open_in_excel=None):
@@ -109,40 +111,42 @@ def rep_case(prm_date_start=None, prm_date_end=None, prm_copy_files=None, prm_op
 
     tr = None
 
-    if prm_copy_files or prm_open_in_excel:
-
-        dirs_copy_name = [r'y:\Законченные случаи', r'\\terminalserver\Кили\Законченные случаи']
-        tr = TemplateRender(3, file_name=r'законченные случаи по врачам c ' + date_start + ' по ' + date_end + '.xlsx',
-                            copyfile=prm_copy_files, open_in_excel=True,
-                            dirs_copy_name=dirs_copy_name, sheet_title='Количество')
-
-        tr.add_header_row('За период с ' + datetime.datetime.strptime(date_start, '%Y-%m-%d').strftime('%d.%m.%Y') + \
-                          ' по ' + datetime.datetime.strptime(date_end, '%Y-%m-%d').strftime('%d.%m.%Y'))
-        tr.add_header_row('')
-
     recs = rep_case_get_count_by_close_doctor(prm_date_start=date_start, prm_date_end=date_end)
 
-    if prm_open_in_excel or prm_copy_files:
+    recs_list = rep_case_get_list(prm_date_start=date_start, prm_date_end=date_end)
 
-        tr.add_titles_row([['ФИО врача', 40], ['Специальность', 40], ['Закрыто случаев', 15]])
-        tr.add_data_row(recs)
+    # if prm_copy_files or prm_open_in_excel:
 
-        tr.add_data_row([['Итого', '', '=SUM(C' + str(tr.first_data_row) + ':C' + str(tr.current_line - 1) + ')']])
+    # dirs_copy_name = [r'y:\Законченные случаи', r'\\terminalserver\Кили\Законченные случаи']
 
-    # tr.close_template_file()
-    recs = rep_case_get_list(prm_date_start=date_start, prm_date_end=date_end)
+    file_name = str(uuid.uuid4()) + '.xlsx'
+    file_full_name = os.path.join(os.getcwd(), 'site_app', 'files', file_name)
 
-    if prm_open_in_excel or prm_copy_files:
-        tr.add_sheet(sheet_title='Список')
+    tr = TemplateRender(3, file_name=file_full_name,
+                        copyfile=False, open_in_excel=prm_open_in_excel, sheet_title='Количество')
 
-        tr.add_header_row('За период с ' + datetime.datetime.strptime(date_start, '%Y-%m-%d').strftime('%d.%m.%Y') + \
-                          ' по ' + datetime.datetime.strptime(date_end, '%Y-%m-%d').strftime('%d.%m.%Y'))
-        tr.add_header_row('')
+    tr.add_header_row('За период с ' + datetime.datetime.strptime(date_start, '%Y-%m-%d').strftime('%d.%m.%Y') + \
+                      ' по ' + datetime.datetime.strptime(date_end, '%Y-%m-%d').strftime('%d.%m.%Y'))
+    tr.add_header_row('')
 
-        tr.add_titles_row([['ФИО врача', 40], ['№ истории', 15], ['Фамилия', 30], ['Имя', 30], ['Отчество', 30],
-                           ['Др', 12], ['Дата закрытия', 12], ['Диагноз', 15]])
-        tr.add_data_row(recs, TemplateRender.align_left_top)
-        tr.close_template_file()
+    tr.add_titles_row([['ФИО врача', 40], ['Специальность', 40], ['Закрыто случаев', 15]])
+    tr.add_data_row(recs)
+
+    tr.add_data_row([['Итого', '', '=SUM(C' + str(tr.first_data_row) + ':C' + str(tr.current_line - 1) + ')']])
+
+    tr.add_sheet(sheet_title='Список')
+
+    tr.add_header_row('За период с ' + datetime.datetime.strptime(date_start, '%Y-%m-%d').strftime('%d.%m.%Y') + \
+                      ' по ' + datetime.datetime.strptime(date_end, '%Y-%m-%d').strftime('%d.%m.%Y'))
+    tr.add_header_row('')
+
+    tr.add_titles_row([['ФИО врача', 40], ['№ истории', 15], ['Фамилия', 30], ['Имя', 30], ['Отчество', 30],
+                       ['Др', 12], ['Дата закрытия', 12], ['Диагноз', 15]])
+    tr.add_data_row(recs_list, TemplateRender.align_left_top)
+
+    tr.close_template_file()
+
+    return file_name
 
 
 if __name__ == '__main__':

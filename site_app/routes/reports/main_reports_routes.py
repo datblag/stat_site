@@ -25,9 +25,6 @@ def report_eln():
     form = PeriodForm()
     if request.method == 'POST' and form.validate_on_submit():
 
-        # prm_date_end_rep = (datetime.datetime.strptime(form.begin_date.data, '%Y-%m-%d') +
-        #                     datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-
         prm_date_end_rep = form.end_date.data + datetime.timedelta(days=1)
         logging.warning(type(form.begin_date.data))
         logging.warning(form.begin_date.data)
@@ -38,7 +35,7 @@ def report_eln():
 
         return send_file(os.path.join('files', file_name), as_attachment=True, mimetype='application/vnd.ms-excel',
                          attachment_filename="выписано элн.xlsx")
-    return render_template(r'reports/eln_count.html', form=form)
+    return render_template(r'reports/report_period.html', form=form)
 
 
 @app.route('/reports/mse_referral', methods=['GET'])
