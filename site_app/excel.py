@@ -14,9 +14,9 @@ def process_gastro_file(path_name, file_name, start_date=None, end_date=None, st
     start_row = start_row_num - 1
     examinations = []
     if process_sheet_num == 1:
-        service_code = 1844
+        service_code = '001848'
     elif process_sheet_num == 2:
-        service_code = 1846
+        service_code = '001849'
     else:
         logging.error('Для указанного листа не задана услуга')
         return examinations
@@ -33,16 +33,24 @@ def process_gastro_file(path_name, file_name, start_date=None, end_date=None, st
         row_num += 1
         fio_value = row[0].value
         logging.warning(fio_value)
-        fio_value = fio_value.split(' ')
+        fio_elemants = fio_value.split(' ')
         fam_value = ''
         im_value = ''
         ot_value = ''
-        logging.warning(fio_value)
-        exam = {'fam': fam_value, 'im': im_value, 'ot': ot_value, 'dr': row[1].value,  'd_u': row[2].value}
+        if len(fio_elemants) > 0:
+            fam_value = fio_elemants[0]
+        if len(fio_elemants) > 1:
+            im_value = fio_elemants[1]
+        if len(fio_elemants) > 2:
+            ot_value = fio_elemants[2]
+        exam = {'fam': fam_value, 'im': im_value, 'ot': ot_value, 'dr': row[1].value,  'code': service_code,
+                'd_u': row[2].value, 'doctor': 'ЧУДАКОВ А.В.', 'speciality': '76'}
         # logging.warning(exam)
-        if exam['fam'] is None or exam['fam'] =='':
+        if exam['fam'] is None or exam['fam'] == '':
+            logging.warning("Не указана фамилия " + fio_value)
             continue
-        if exam['im'] is None:
+        if exam['im'] is None or exam['im'] == '':
+            logging.warning("Не указано имя " + fio_value)
             continue
         dr_value = exam['dr'][0:8]
         if len(dr_value) == 4:
@@ -69,17 +77,19 @@ def process_gastro_file(path_name, file_name, start_date=None, end_date=None, st
         if end_date is not None and exam['d_u'] > end_date:
             continue
         import_total += 1
+        examinations.append(exam)
 
     logging.warning('Всего импортировано строк ' + str(import_total))
+    return examinations
 
 
 def process_uzi_file(path_name, file_name, start_date=None, end_date=None, start_row_num=2, process_sheet_num=1):
     start_row = start_row_num - 1
     examinations = []
     if process_sheet_num == 1:
-        service_code = 1844
+        service_code = '001844'
     elif process_sheet_num == 2:
-        service_code = 1846
+        service_code = '001846'
     else:
         logging.error('Для указанного листа не задана услуга')
         return examinations
@@ -95,7 +105,7 @@ def process_uzi_file(path_name, file_name, start_date=None, end_date=None, start
             continue
         row_num += 1
         exam = {'fam': row[0].value, 'im': row[1].value,  'ot': row[2].value, 'dr': row[3].value, 'd_u': row[4].value,
-                'cod': service_code, 'doctor': row[5].value}
+                'code': service_code, 'doctor': row[5].value, 'speciality': '22'}
         if exam['fam'] is None:
             continue
         if start_date is not None and exam['d_u'] < start_date:

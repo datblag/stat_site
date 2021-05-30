@@ -9,10 +9,11 @@ def generate_examinations_file(examinations, path_name, generate_file=True):
                           '''fam C(50)
                           ;im C(50)
                           ;ot C(50)
-                          ;cod N(10, 0)
+                          ;code C(6)
                           ;d_u D
                           ;dr D
-                          ;doctor C(100)''',
+                          ;doctor C(100)
+                          ;speciality C(2)''',
                           codepage='cp866')
     else:
         table = dbf.Table(os.path.join(path_name, 'obsled.dbf'))
