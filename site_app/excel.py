@@ -10,6 +10,69 @@ MAPPING_BY_DATE = 1
 MAPPING_BY_YEAR = 0
 
 
+def process_gastro_file(path_name, file_name, start_date=None, end_date=None, start_row_num=2, process_sheet_num=1):
+    start_row = start_row_num - 1
+    examinations = []
+    if process_sheet_num == 1:
+        service_code = 1844
+    elif process_sheet_num == 2:
+        service_code = 1846
+    else:
+        logging.error('Для указанного листа не задана услуга')
+        return examinations
+    sheet_num = process_sheet_num - 1
+    file_full_name = os.path.join(path_name, file_name)
+    wb = openpyxl.load_workbook(file_full_name)
+    ws = wb.worksheets[sheet_num]
+    import_total = 0
+
+    logging.warning(end_date)
+    for row_num, row in enumerate(ws.iter_rows()):
+        if row_num < start_row:
+            continue
+        row_num += 1
+        fio_value = row[0].value
+        logging.warning(fio_value)
+        fio_value = fio_value.split(' ')
+        fam_value = ''
+        im_value = ''
+        ot_value = ''
+        logging.warning(fio_value)
+        exam = {'fam': fam_value, 'im': im_value, 'ot': ot_value, 'dr': row[1].value,  'd_u': row[2].value}
+        # logging.warning(exam)
+        if exam['fam'] is None or exam['fam'] =='':
+            continue
+        if exam['im'] is None:
+            continue
+        dr_value = exam['dr'][0:8]
+        if len(dr_value) == 4:
+            logging.warning(dr_value)
+            dr_value = '01.01.' + dr_value
+            logging.warning(dr_value)
+        elif len(dr_value) == 6:
+            dr_value = '01.01.' + dr_value[2:4]
+        try:
+            dr = datetime.datetime.strptime(dr_value, '%d.%m.%y')
+        except:
+            continue
+        if dr > datetime.datetime.now():
+            dr_value = dr_value[0:6] + '19' + dr_value[6:8]
+            dr = datetime.datetime.strptime(dr_value, '%d.%m.%Y')
+        exam['dr'] = dr
+
+        du_value = exam['d_u'][0:8]
+        du = datetime.datetime.strptime(du_value, '%d.%m.%y')
+        exam['d_u'] = du
+        logging.warning(exam)
+        if start_date is not None and exam['d_u'] < start_date:
+            continue
+        if end_date is not None and exam['d_u'] > end_date:
+            continue
+        import_total += 1
+
+    logging.warning('Всего импортировано строк ' + str(import_total))
+
+
 def process_uzi_file(path_name, file_name, start_date=None, end_date=None, start_row_num=2, process_sheet_num=1):
     start_row = start_row_num - 1
     examinations = []
@@ -31,20 +94,16 @@ def process_uzi_file(path_name, file_name, start_date=None, end_date=None, start
         if row_num < start_row:
             continue
         row_num += 1
-        fam_value = row[0].value
-        im_value = row[1].value
-        ot_value = row[2].value
-        dr_value = row[3].value
-        d_u_value = row[4].value
-        doctor_value = row[5].value
-        if fam_value is None:
+        exam = {'fam': row[0].value, 'im': row[1].value,  'ot': row[2].value, 'dr': row[3].value, 'd_u': row[4].value,
+                'cod': service_code, 'doctor': row[5].value}
+        if exam['fam'] is None:
             continue
-        if start_date is not None and d_u_value < start_date:
+        if start_date is not None and exam['d_u'] < start_date:
             continue
-        if end_date is not None and d_u_value > end_date:
+        if end_date is not None and exam['d_u'] > end_date:
             continue
 
-        exam = [fam_value, im_value, ot_value, dr_value, d_u_value, service_code, doctor_value]
+        # exam = [fam_value, im_value, ot_value, dr_value, d_u_value, service_code, doctor_value]
         # logging.warning(exam)
         examinations.append(exam)
         import_total += 1
