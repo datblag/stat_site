@@ -54,6 +54,7 @@ class RefDefectTypes(db.Model):
     defect_type_id = db.Column(db.Integer, primary_key=True)
     defect_type_code = db.Column(db.String(6))
     defect_name = db.Column(db.String(500))
+    is_active = db.Column(db.Boolean, nullable=True)
 
 
 class RefBureauMse(db.Model):
